@@ -55,15 +55,17 @@ PIZZA_PEPPERONI = pygame.image.load(
 )
 PIZZA_PEPPERONI = pygame.transform.scale(PIZZA_PEPPERONI, (64, 64))
 
-#variáveis globais
-
 #variáveis dinâmicas
     #hitboxes
 mc_hitbox = pygame.Rect(250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
 enemy_hitbox = pygame.Rect(700, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
 pizza_refill_zone = pygame.Rect(0, ((HEIGHT - (HEIGHT * 0.20) * 3) // 1), (32), (256))
-    #
+    #Listas
 mc_projectiles = []
+enemy_alive = []
+waves = []
+#EVENTOS
+enemy_hit = pygame.USEREVENT + 1
 
 #funções
 def movement(keys_pressed, mc_hitbox):
