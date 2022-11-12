@@ -50,12 +50,14 @@ PIZZA_PEPPERONI = pygame.image.load(
 PIZZA_PEPPERONI = pygame.transform.scale(PIZZA_PEPPERONI, (64, 64))
 
 #variáveis dinâmicas
+playing = True
+spawn_time = 1
+timer = 0
     #hitboxes
 mc_hitbox = pygame.Rect(250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
 pizza_refill_zone = pygame.Rect(0, ((HEIGHT - (HEIGHT * 0.20) * 3) // 1), (32), (256))
     #Listas
 mc_projectiles = []
-waves = []
 lanes_pos = [LANE_1.y, LANE_2.y, LANE_3.y, LANE_4.y]
 enemy_alive_pos = []
 enemy_alive_stats = []
@@ -64,31 +66,37 @@ enemy_basico_stats = [1, 1]
 enemy_basico_hitbox = pygame.Rect(WIDTH - DEFAULT_CHARACTER_WIDHT, (lanes_pos[random.randint(0, 3)]), 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
     #velocidades
-Vel = 5
-EnemyVel = 10
-ProjectileVel = 10
+vel = 5
+projectile_vel = 10
 #EVENTOS
-SpawnCliente = pygame.event.custom_type() + 1
+SpawnClient = pygame.event.custom_type() + 1
+SpawnClientEvent = pygame.event.Event(SpawnClient)
 
 #funções
 def movement(keys_pressed, mc_hitbox):
-    if keys_pressed[pygame.K_a] and mc_hitbox.x - Vel > 0:
-            mc_hitbox.x -= Vel
+    if keys_pressed[pygame.K_a] and mc_hitbox.x - vel > 0:
+            mc_hitbox.x -= vel
 
-    if keys_pressed[pygame.K_d] and (mc_hitbox.x + DEFAULT_CHARACTER_WIDHT) + Vel < WIDTH // 4:
-            mc_hitbox.x += Vel
+    if keys_pressed[pygame.K_d] and (mc_hitbox.x + DEFAULT_CHARACTER_WIDHT) + vel < WIDTH // 4:
+            mc_hitbox.x += vel
 
-    if keys_pressed[pygame.K_w] and mc_hitbox.y - Vel > 0 + ((HEIGHT * 0.20 // 1)):
-            mc_hitbox.y -= Vel
+    if keys_pressed[pygame.K_w] and mc_hitbox.y - vel > 0 + ((HEIGHT * 0.20 // 1)):
+            mc_hitbox.y -= vel
 
-    if keys_pressed[pygame.K_s] and mc_hitbox.y + Vel < HEIGHT - DEFAULT_CHARACTER_HEIGHT:
-            mc_hitbox.y += Vel
+    if keys_pressed[pygame.K_s] and mc_hitbox.y + vel < HEIGHT - DEFAULT_CHARACTER_HEIGHT:
+            mc_hitbox.y += vel
 
-def jogo():
+def Jogo():
+    point_time = 0
     run = True
     while run: 
-        # spawn teste
-        pygame.time.set_timer(SpawnCliente, 18)
+        #spawn teste
+        if playing == True:
+            run_time = pygame.time.get_ticks()
+        
+        if run_time - point_time > 2000:
+            point_time = run_time
+            pygame.event.post(SpawnClientEvent)
 
         keys_pressed = pygame.key.get_pressed()
         movement(keys_pressed, mc_hitbox)
@@ -101,13 +109,14 @@ def jogo():
                     projectile = pygame.Rect(
                         mc_hitbox.x + mc_hitbox.width, mc_hitbox.y + mc_hitbox.height/3 , 50 , 10)
                     mc_projectiles.append(projectile)
-
-            if event.type == SpawnCliente:
+                
+            if event == SpawnClientEvent:
                 SpawnEnemy()
 
         ProjectileHandling()
         EnemyHandling()
         ColissionHandling()
+
 
         #UPDATE DA TELA
         
@@ -141,7 +150,7 @@ def MainMenu():
 
 def ProjectileHandling():
     for projectile in mc_projectiles:
-        projectile.x += (ProjectileVel) // 1
+        projectile.x += (projectile_vel) // 1
         if projectile.x > WIDTH:
             mc_projectiles.remove(projectile)
         elif projectile.x < 0: 
@@ -165,4 +174,5 @@ def SpawnEnemy():
     enemy_basico_stats = [1, 3]
     enemy_alive_pos.append(enemy_basico_hitbox)
     enemy_alive_stats.append(enemy_basico_stats)
-jogo()
+
+Jogo()
