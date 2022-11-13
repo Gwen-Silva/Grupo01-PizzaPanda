@@ -312,6 +312,11 @@ def Jogo():
             WIN.blit(all_pizzas[mc_projectiles[i][1]][(sprite_order % 4)], 
             (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
             )
+        
+        for i in range(len(pizzas_in_line)):
+            WIN.blit(all_pizzas[pizzas_in_line[i][1][0]][0], (pizzas_in_line[i][0].x,
+            pizzas_in_line[i][0].y)
+            )
 
         WIN.blit(MAIN_CHARACTER, (mc_hitbox.x, mc_hitbox.y))
 
