@@ -94,36 +94,110 @@ Student1_3 = pygame.image.load(
     os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Student1', '3.png')
 )
 
-Student1_0 =pygame.transform.scale(Student1_0, (105, 105))
-Student1_1 =pygame.transform.scale(Student1_1, (105, 105))
-Student1_2 =pygame.transform.scale(Student1_2, (105, 105))
-Student1_3 =pygame.transform.scale(Student1_3, (105, 105))
+Student1_0 = pygame.transform.scale(Student1_0, (105, 105))
+Student1_1 = pygame.transform.scale(Student1_1, (105, 105))
+Student1_2 = pygame.transform.scale(Student1_2, (105, 105))
+Student1_3 = pygame.transform.scale(Student1_3, (105, 105))
 
 Student1 = [Student1_0, Student1_1, Student1_2, Student1_3]
 
-#variáveis dinâmicas
-playing = True
-spawn_time = 1
-timer = 0
+Adult1_0 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult1', '0.png')
+)
+Adult1_1 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult1', '1.png')
+)
+Adult1_2 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult1', '2.png')
+)
+Adult1_3 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult1', '3.png')
+)
+
+Adult1_0 = pygame.transform.scale(Adult1_0, (105, 105))
+Adult1_1 = pygame.transform.scale(Adult1_1, (105, 105))
+Adult1_2 = pygame.transform.scale(Adult1_2, (105, 105))
+Adult1_3 = pygame.transform.scale(Adult1_3, (105, 105))
+
+Adult1 = [Adult1_0, Adult1_1, Adult1_2, Adult1_3]
+
+Adult2_0 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult2', '0.png')
+)
+Adult2_1 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult2', '1.png')
+)
+Adult2_2 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult2', '2.png')
+)
+Adult2_3 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult2', '3.png')
+)
+
+Adult2_0 = pygame.transform.scale(Adult2_0, (105, 105))
+Adult2_1 = pygame.transform.scale(Adult2_1, (105, 105))
+Adult2_2 = pygame.transform.scale(Adult2_2, (105, 105))
+Adult2_3 = pygame.transform.scale(Adult2_3, (105, 105))
+
+Adult2 = [Adult2_0, Adult2_1, Adult2_2, Adult2_3]
+
+Adult3_0 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult3', '0.png')
+)
+Adult3_1 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult3', '1.png')
+)
+Adult3_2 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult3', '2.png')
+)
+Adult3_3 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult3', '3.png')
+)
+
+Adult3_0 = pygame.transform.scale(Adult3_0, (105, 105))
+Adult3_1 = pygame.transform.scale(Adult3_1, (105, 105))
+Adult3_2 = pygame.transform.scale(Adult3_2, (105, 105))
+Adult3_3 = pygame.transform.scale(Adult3_3, (105, 105))
+
+Adult3 = [Adult3_0, Adult3_1, Adult3_2, Adult3_3]
+
+Adult4_0 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult4', '0.png')
+)
+Adult4_1 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult4', '1.png')
+)
+Adult4_2 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult4', '2.png')
+)
+Adult4_3 = pygame.image.load(
+    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult4', '3.png')
+)
+
+Adult4_0 = pygame.transform.scale(Adult4_0, (105, 105))
+Adult4_1 = pygame.transform.scale(Adult4_1, (105, 105))
+Adult4_2 = pygame.transform.scale(Adult4_2, (105, 105))
+Adult4_3 = pygame.transform.scale(Adult4_3, (105, 105))
+
+Adult4 = [Adult4_0, Adult4_1, Adult4_2, Adult4_3]
+
+playing = False
     #hitboxes
 mc_hitbox = pygame.Rect(250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
 pizza_refill_zone = pygame.Rect(0, ((HEIGHT - (HEIGHT * 0.20) * 3) // 1), (32), (256))
     #Listas
 mc_projectiles = []
-mc_projectiles_type = []
 lanes_pos = [LANE_1.y, LANE_2.y, LANE_3.y, LANE_4.y]
-enemy_alive_pos = []
-enemy_alive_stats = []
+enemy_alive = []
     #inimigos
-enemy_basico_stats = [1, 1]
 enemy_basico_hitbox = pygame.Rect(WIDTH  - DEFAULT_CHARACTER_WIDHT, (lanes_pos[random.randint(0, 3)]), 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
     #velocidades
 vel = 5
 projectile_vel = 3
 #EVENTOS
-SpawnClient = pygame.event.custom_type() + 1
-SpawnClientEvent = pygame.event.Event(SpawnClient)
+CustomEvent1 = pygame.event.custom_type() + 1
+SpawnEnemyEvent = pygame.event.Event(CustomEvent1)
 
 #funções
 def movement(keys_pressed, mc_hitbox):
@@ -141,20 +215,28 @@ def movement(keys_pressed, mc_hitbox):
 
 def Jogo():
     all_pizzas = [PIZZA1, PIZZA2, PIZZA3, PIZZA4]
+    all_adults = [Adult1, Adult2, Adult3, Adult4]
+    all_students = [Student1]
+    all_enemies = [all_adults, all_students]
+
     sprite_order = 0
+    spawn_rate = 2000
+
     point_time = 0
     point_time1 = 0
+
     run = True
+    playing = True
     while run: 
 
         if playing == True:
             run_time = pygame.time.get_ticks()
         
-        if run_time - point_time > 2000:
+        if run_time - point_time > spawn_rate and spawn_rate != 0:
             point_time = run_time
-            pygame.event.post(SpawnClientEvent)
+            pygame.event.post(SpawnEnemyEvent)
 
-        if run_time - point_time1 > 100:
+        if run_time - point_time1 > 80:
             point_time1 = run_time
             sprite_order += 1
 
@@ -166,19 +248,15 @@ def Jogo():
                 run = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_j:
-                    projectile = pygame.Rect(
-                        mc_hitbox.x + mc_hitbox.width, mc_hitbox.y + mc_hitbox.height/8 , 40 , 40)
-                    mc_projectiles.append(projectile)
-                    projectile_type = all_pizzas[random.randint(0, 3)]
-                    mc_projectiles_type.append(projectile_type)
+                    SpawnProjectile()
 
-            if event == SpawnClientEvent:
+            if event == SpawnEnemyEvent:
                 SpawnEnemy()
 
         ProjectileHandling()
         EnemyHandling()
         ColissionHandling()
-
+        RemoveEntities()
 
         #UPDATE DA TELA
         
@@ -194,20 +272,21 @@ def Jogo():
 
             pygame.draw.rect(WIN, BLACK, mc_hitbox)
 
-            for enemy_basico_hitbox in enemy_alive_pos:
+            for enemy_basico_hitbox in enemy_alive:
                 pygame.draw.rect(WIN, RED, enemy_basico_hitbox)  
 
             for projectile in mc_projectiles:
                 pygame.draw.rect(WIN, RED, projectile)
         
-        for enemy_basico_hitbox in enemy_alive_pos:
-            WIN.blit(Student1[sprite_order % 3], 
-            (enemy_basico_hitbox.x - 30, enemy_basico_hitbox.y - 20)
-            )
+        for i in range(len(enemy_alive)):
+                WIN.blit(all_enemies[enemy_alive[i][1][0]][enemy_alive[i][1][1]][sprite_order % 3], 
+                (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 20)
+                )
+ 
 
-        for projectile in mc_projectiles:
-            WIN.blit(all_pizzas[projectile[1] % 4][(sprite_order % 4)], 
-            (projectile.x - 10, projectile.y - 12)
+        for i in range(len(mc_projectiles)):
+            WIN.blit(all_pizzas[mc_projectiles[i][1]][(sprite_order % 4)], 
+            (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
             )
 
         WIN.blit(MAIN_CHARACTER, (mc_hitbox.x, mc_hitbox.y))
@@ -220,33 +299,55 @@ def Jogo():
     pygame.quit()
 
 def MainMenu():
-    print("placeholder")
+    print("Fazer")
 
 def ProjectileHandling():
-    for projectile in mc_projectiles:
-        projectile.x += (projectile_vel) // 1
-        if projectile.x > WIDTH:
-            mc_projectiles.remove(projectile)
-        elif projectile.x < 0: 
-             mc_projectiles.remove(projectile)
+    for i in range(len(mc_projectiles)):
+        mc_projectiles[i][0].x += (projectile_vel) // 1
+        if mc_projectiles[i][0].x > WIDTH:
+            mc_projectiles[i][2] = False
+        elif mc_projectiles[i][0].x < 0: 
+            mc_projectiles[i][2] = False
 
 def EnemyHandling():
-    for enemy_basico_hitbox in enemy_alive_pos:
-        enemy_basico_hitbox.x -= (enemy_basico_stats[1]) // 1
+    for i in range(len(enemy_alive)):
+        enemy_alive[i][0].x -= (enemy_stats[2]) // 1
 
-def ColissionHandling():
-    for projectile in mc_projectiles:
-        for enemy_basico_hitbox in enemy_alive_pos:
-            if projectile.colliderect(enemy_basico_hitbox):
-                mc_projectiles.remove(projectile)
-                enemy_alive_pos.remove(enemy_basico_hitbox)
+def ColissionHandling():    
+    for i in range(len(mc_projectiles)):
+        for i2 in range(len(enemy_alive)):
+                if mc_projectiles[i][0].colliderect(enemy_alive[i2][0]):
+                    mc_projectiles[i][2] = False
+                    enemy_alive[i2][1][3] -= 1
 
 
 def SpawnEnemy():
-    enemy_basico_hitbox = pygame.Rect(WIDTH + DEFAULT_CHARACTER_WIDHT, 
+    global enemy_stats
+    enemy_hitbox = pygame.Rect(WIDTH + DEFAULT_CHARACTER_WIDHT, 
     (lanes_pos[random.randint(0, 3)] + 40), DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
-    enemy_basico_stats = [1, 3]
-    enemy_alive_pos.append(enemy_basico_hitbox)
-    enemy_alive_stats.append(enemy_basico_stats)
+    enemy_stats = [0, random.randint(0, 3), 3, 1]
+    enemy_alive.append([enemy_hitbox, enemy_stats])
 
+def SpawnProjectile():
+    projectile = pygame.Rect(mc_hitbox.x + mc_hitbox.width, mc_hitbox.y + mc_hitbox.height/8 , 40 , 40)
+    mc_projectiles.append([projectile, random.randint(0, 3), True])
+
+def RemoveEntities():
+    for_removal = []
+    for_removal2 = []
+    for i in range(len(mc_projectiles)):
+        if mc_projectiles[i][2] == False:
+            for_removal.append(mc_projectiles[i])
+    
+    for i2 in range(len(enemy_alive)):
+        if enemy_alive[i2][1][3] < 1:
+            for_removal2.append(enemy_alive[i2])
+
+    for i in range(len(for_removal)):
+        mc_projectiles.remove(for_removal[i])
+
+    for i in range(len(for_removal2)):
+        enemy_alive.remove(for_removal2[i])
+def intro():
+    print("Fazer")
 Jogo()
