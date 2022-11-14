@@ -81,6 +81,17 @@ PIZZA4_3 = pygame.transform.rotate(PIZZA4_0, 270)
 
 PIZZA4 = [PIZZA4_0, PIZZA4_1, PIZZA4_2, PIZZA4_3]
 
+PIZZA5_0 = pygame.image.load(os.path.join('JOGO-1SEM','Assets', 'Missing_Sprite.png'))
+
+PIZZA5 = [PIZZA5_0, PIZZA5_0, PIZZA5_0, PIZZA5_0]
+
+PIZZA6_0 = pygame.image.load(os.path.join('JOGO-1SEM','Assets', 'Missing_Sprite.png'))
+
+PIZZA6 = [PIZZA6_0, PIZZA6_0, PIZZA6_0, PIZZA6_0]
+
+PIZZA7_0 = pygame.image.load(os.path.join('JOGO-1SEM','Assets', 'Missing_Sprite.png'))
+
+PIZZA7 = [PIZZA7_0, PIZZA7_0, PIZZA7_0, PIZZA7_0]
 Student1_0 = pygame.image.load(
     os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Student1', '0.png')
 )
@@ -200,11 +211,12 @@ projectile_vel = 5
 pizza_vel = 1
     #limites
 max_pizzas_in_line = 6
-max_holding_pizzas = 2
+max_holding_pizzas = 2 
 max_bounces = 10
     #atributos
 holding_pizzas = 0
 bounce_yspeed = 3
+explosion_size = 300
 
 #EVENTOS
 CustomEvent1 = pygame.event.custom_type() + 1
@@ -225,18 +237,21 @@ def movement(keys_pressed, mc_hitbox):
             mc_hitbox.y += vel
 
 def Jogo():
-    all_pizzas = [PIZZA1, PIZZA2, PIZZA3, PIZZA4]
+    global all_pizzas
+    all_pizzas = [PIZZA1, PIZZA2, PIZZA3, PIZZA4, PIZZA5, PIZZA6, PIZZA7]   
     all_adults = [Adult1, Adult2, Adult3, Adult4]
     all_students = [Student1]
     all_enemies = [all_adults, all_students]
 
     sprite_order = 0
-    spawn_rate = 400
+    spawn_rate = 4000
     fire_rate = 3000
 
     point_time = 0
     point_time1 = 0
     point_time2 = 0
+
+        #debbug
 
     global holding_pizzas
 
@@ -268,7 +283,7 @@ def Jogo():
                 run = False
         
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_j:
+                if event.key == pygame.K_e:
                     if holding_pizzas > 0:
                         SpawnProjectile()
                         holding_pizzas -= 1
@@ -312,7 +327,7 @@ def Jogo():
  
 
         for i in range(len(mc_projectiles)):
-            WIN.blit(all_pizzas[mc_projectiles[i][1]][(sprite_order % 4)], 
+            WIN.blit(all_pizzas[mc_projectiles[i][1][0]][(sprite_order % 4)], 
             (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
             )
         
@@ -335,24 +350,24 @@ def MainMenu():
 def PositionHandling():
     for i in range(len(mc_projectiles)):
         mc_projectiles[i][0].x += 2 // 1
-        if mc_projectiles[i][1] == 3:
+        if mc_projectiles[i][1][0] == 4:
             
             if mc_projectiles[i][0].y < 150:
-                mc_projectiles[i][3] -= 1
+                mc_projectiles[i][1][2] -= 1
 
             if mc_projectiles[i][0].y > HEIGHT - 30:
-                mc_projectiles[i][3] -= 1
+                mc_projectiles[i][1][2] -= 1
 
-            if mc_projectiles[i][3] % 2 == 0:
+            if mc_projectiles[i][1][2] % 2 == 0:
                 mc_projectiles[i][0].y -= bounce_yspeed //1
 
             else:
                 mc_projectiles[i][0].y += bounce_yspeed // 1
 
         if mc_projectiles[i][0].x > WIDTH:
-            mc_projectiles[i][2] = False
+            mc_projectiles[i][1][1] = False
         elif mc_projectiles[i][0].x < 0: 
-            mc_projectiles[i][2] = False
+            mc_projectiles[i][1][1] = False
 
     for i in range(len(enemy_alive)):
         enemy_alive[i][0].x -= (enemy_alive[i][1][2]) // 1
@@ -366,11 +381,20 @@ def ColissionHandling():
 
     for i in range(len(mc_projectiles)):
         for i2 in range(len(enemy_alive)):
-                if mc_projectiles[i][0].colliderect(enemy_alive[i2][0]):
-                    if mc_projectiles[i][1] == 3:
-                        mc_projectiles[i][3] -= 1
-                    else:    
-                        mc_projectiles[i][2] = False
+                if mc_projectiles[i][0].colliderect(enemy_alive[i2][0]) and mc_projectiles[i][1][1] == True:
+                    if mc_projectiles[i][1][0] == 6:
+                        mc_projectiles[i][0] = pygame.Rect(
+                        mc_projectiles[i][0].x - (explosion_size * 1.5 - (mc_projectiles[i][0].w * 6) //1), 
+                        mc_projectiles[i][0].y - (explosion_size - (mc_projectiles[i][0].h * 4) //1),
+                        explosion_size* 1.5, explosion_size
+                        )
+                        explosion()
+
+                    if mc_projectiles[i][1][0] == 4:
+                        mc_projectiles[i][1][2] -= 1
+                        
+                    elif mc_projectiles[i][1][0] != 5 and mc_projectiles[i][1][0] != 6:    
+                        mc_projectiles[i][1][1] = False
                     enemy_alive[i2][1][3] -= 1
 
     for i in range(len(pizzas_in_line)):
@@ -388,18 +412,23 @@ def SpawnEnemy():
 
 def SpawnProjectile():
     projectile = pygame.Rect(mc_hitbox.x + mc_hitbox.width, mc_hitbox.y + mc_hitbox.height/8 , 40 , 40)
-    if temp_pizza_sprite[0] == 3:
-        mc_projectiles.append([projectile, temp_pizza_sprite[0], True, max_bounces])
+    projectile_stats = [temp_pizza_sprite[0], True]
+    if temp_pizza_sprite[0] == 4:
+        projectile_stats.append(max_bounces)
+        mc_projectiles.append([projectile, projectile_stats])
 
     else:
-        mc_projectiles.append([projectile, temp_pizza_sprite[0], True])
+        mc_projectiles.append([projectile, projectile_stats])
     temp_pizza_sprite.pop(0)
     
 
 
 def SpawnPizza():
+    global pizza_type_control #variável de debug
+    pizza_type_control = random.randint(0, len(all_pizzas) - 1)
+     
     pizza = pygame.Rect(0, HEIGHT, 64, 64)
-    pizza_stat = [random.randint(0,3), pizza_vel, True]
+    pizza_stat = [pizza_type_control, pizza_vel, True]
     pizzas_in_line.append([pizza, pizza_stat])
 
 def RemoveEntities():
@@ -407,11 +436,11 @@ def RemoveEntities():
     for_removal2 = []
     for_removal3 = []
     for i in range(len(mc_projectiles)):
-        if mc_projectiles[i][2] == False:
+        if mc_projectiles[i][1][1] == False:
             for_removal.append(mc_projectiles[i])
         
-        if mc_projectiles[i][1] == 3:
-            if mc_projectiles[i][3] <= 0:
+        if mc_projectiles[i][1][0] == 4:
+            if mc_projectiles[i][1][2] <= 0:
                 for_removal.append(mc_projectiles[i])
     
     for i in range(len(enemy_alive)):
@@ -430,6 +459,15 @@ def RemoveEntities():
     
     for i in range(len(for_removal3)):
         pizzas_in_line.remove(for_removal3[i])
+
+def explosion():
+    for i in range(len(mc_projectiles)):
+            for i2 in range(len(enemy_alive)):
+                if mc_projectiles[i][0].colliderect(enemy_alive[i2][0]) and mc_projectiles[i][1][1] == True:
+                    enemy_alive[i2][1][3] -= 1
+                    if i2 == len(enemy_basico_hitbox) -1 and len(enemy_basico_hitbox) -1 > 0: 
+                        mc_projectiles[i][1][1] = False
+
 def intro():
     print("Fazer")
 Jogo()
