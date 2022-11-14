@@ -190,6 +190,7 @@ mc_projectiles = []
 lanes_pos = [LANE_1.y, LANE_2.y, LANE_3.y, LANE_4.y]
 enemy_alive = []
 pizzas_in_line = []
+temp_pizza_sprite = []
     #inimigos
 enemy_basico_hitbox = pygame.Rect(WIDTH  - DEFAULT_CHARACTER_WIDHT, (lanes_pos[random.randint(0, 3)]), 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
@@ -291,10 +292,10 @@ def Jogo():
 
             pygame.draw.rect(WIN, BLACK, mc_hitbox)
 
-            """
-            for i in enemy_alive: #quebrou por motivos desconhecidos
+            
+            for i in range(len(enemy_alive)):
                 pygame.draw.rect(WIN, RED, enemy_alive[i][0])  
-            """
+            
 
             for i in range(len(mc_projectiles)):
                 pygame.draw.rect(WIN, RED, mc_projectiles[i][0])
@@ -358,6 +359,7 @@ def ColissionHandling():
             if holding_pizzas < max_holding_pizzas and pizzas_in_line[i][1][2] == True:
                 holding_pizzas += 1
                 pizzas_in_line[i][1][2] = False
+                temp_pizza_sprite.append(pizzas_in_line[i][1][0])
 
 def SpawnEnemy():
     enemy_hitbox = pygame.Rect(WIDTH + DEFAULT_CHARACTER_WIDHT, 
@@ -367,7 +369,8 @@ def SpawnEnemy():
 
 def SpawnProjectile():
     projectile = pygame.Rect(mc_hitbox.x + mc_hitbox.width, mc_hitbox.y + mc_hitbox.height/8 , 40 , 40)
-    mc_projectiles.append([projectile, random.randint(0, 3), True])
+    mc_projectiles.append([projectile, temp_pizza_sprite[0], True])
+    temp_pizza_sprite.pop(0)
 
 def SpawnPizza():
     pizza = pygame.Rect(0, HEIGHT, 64, 64)
