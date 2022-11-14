@@ -196,13 +196,15 @@ enemy_basico_hitbox = pygame.Rect(WIDTH  - DEFAULT_CHARACTER_WIDHT, (lanes_pos[r
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
     #velocidades
 vel = 5
-projectile_vel = 3
+projectile_vel = 5
 pizza_vel = 1
     #limites
 max_pizzas_in_line = 6
 max_holding_pizzas = 2
+max_bounces = 10
     #atributos
 holding_pizzas = 0
+bounce_yspeed = 3
 
 #EVENTOS
 CustomEvent1 = pygame.event.custom_type() + 1
@@ -229,7 +231,7 @@ def Jogo():
     all_enemies = [all_adults, all_students]
 
     sprite_order = 0
-    spawn_rate = 4000
+    spawn_rate = 400
     fire_rate = 3000
 
     point_time = 0
@@ -332,7 +334,21 @@ def MainMenu():
 
 def PositionHandling():
     for i in range(len(mc_projectiles)):
-        mc_projectiles[i][0].x += (projectile_vel) // 1
+        mc_projectiles[i][0].x += 2 // 1
+        if mc_projectiles[i][1] == 3:
+            
+            if mc_projectiles[i][0].y < 150:
+                mc_projectiles[i][3] -= 1
+
+            if mc_projectiles[i][0].y > HEIGHT - 30:
+                mc_projectiles[i][3] -= 1
+
+            if mc_projectiles[i][3] % 2 == 0:
+                mc_projectiles[i][0].y -= bounce_yspeed //1
+
+            else:
+                mc_projectiles[i][0].y += bounce_yspeed // 1
+
         if mc_projectiles[i][0].x > WIDTH:
             mc_projectiles[i][2] = False
         elif mc_projectiles[i][0].x < 0: 
@@ -351,7 +367,10 @@ def ColissionHandling():
     for i in range(len(mc_projectiles)):
         for i2 in range(len(enemy_alive)):
                 if mc_projectiles[i][0].colliderect(enemy_alive[i2][0]):
-                    mc_projectiles[i][2] = False
+                    if mc_projectiles[i][1] == 3:
+                        mc_projectiles[i][3] -= 1
+                    else:    
+                        mc_projectiles[i][2] = False
                     enemy_alive[i2][1][3] -= 1
 
     for i in range(len(pizzas_in_line)):
@@ -369,8 +388,14 @@ def SpawnEnemy():
 
 def SpawnProjectile():
     projectile = pygame.Rect(mc_hitbox.x + mc_hitbox.width, mc_hitbox.y + mc_hitbox.height/8 , 40 , 40)
-    mc_projectiles.append([projectile, temp_pizza_sprite[0], True])
+    if temp_pizza_sprite[0] == 3:
+        mc_projectiles.append([projectile, temp_pizza_sprite[0], True, max_bounces])
+
+    else:
+        mc_projectiles.append([projectile, temp_pizza_sprite[0], True])
     temp_pizza_sprite.pop(0)
+    
+
 
 def SpawnPizza():
     pizza = pygame.Rect(0, HEIGHT, 64, 64)
@@ -384,6 +409,10 @@ def RemoveEntities():
     for i in range(len(mc_projectiles)):
         if mc_projectiles[i][2] == False:
             for_removal.append(mc_projectiles[i])
+        
+        if mc_projectiles[i][1] == 3:
+            if mc_projectiles[i][3] <= 0:
+                for_removal.append(mc_projectiles[i])
     
     for i in range(len(enemy_alive)):
         if enemy_alive[i][1][3] < 1:
