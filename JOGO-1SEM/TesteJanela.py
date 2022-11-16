@@ -13,6 +13,7 @@ pygame.display.set_caption("Supa Pizza Panda")
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 
 FPS = 60
 CLOCK = pygame.time.Clock()
@@ -192,6 +193,11 @@ Adult4_3 = pygame.transform.scale(Adult4_3, (105, 105))
 
 Adult4 = [Adult4_0, Adult4_1, Adult4_2, Adult4_3]
 
+COUNTER = pygame.image.load( os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'BalcaoTerminado.png'))
+COUNTER = pygame.transform.scale(COUNTER, (WIDTH * 0.08 // 1, HEIGHT * 0.8 // 1))
+
+#HUD_HP = 
+
 playing = False
     #hitboxes
 mc_hitbox = pygame.Rect(250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
@@ -214,9 +220,13 @@ max_pizzas_in_line = 6
 max_holding_pizzas = 2 
 max_bounces = 10
     #atributos
+hit_poits = 5
+hit_is_taken = 0
 holding_pizzas = 0
 bounce_yspeed = 3
 explosion_size = 300
+    #essêncial
+run = True
 
 #EVENTOS
 CustomEvent1 = pygame.event.custom_type() + 1
@@ -238,6 +248,7 @@ def movement(keys_pressed, mc_hitbox):
 
 def Jogo():
     global all_pizzas
+    global run
     all_pizzas = [PIZZA1, PIZZA2, PIZZA3, PIZZA4, PIZZA5, PIZZA6, PIZZA7]   
     all_adults = [Adult1, Adult2, Adult3, Adult4]
     all_students = [Student1]
@@ -255,7 +266,6 @@ def Jogo():
 
     global holding_pizzas
 
-    run = True
     playing = True
     while run: 
 
@@ -294,6 +304,8 @@ def Jogo():
         PositionHandling()
         ColissionHandling()
         RemoveEntities()
+        if hit_poits <= 0:
+            GameOver()
 
         #UPDATE DA TELA
         
@@ -304,11 +316,10 @@ def Jogo():
             pygame.draw.rect(WIN, WHITE, LANE_1)
             pygame.draw.rect(WIN, BLACK, LANE_2)
             pygame.draw.rect(WIN, WHITE, LANE_3)
-            pygame.draw.rect(WIN, BLACK, LANE_4)
+            pygame.draw.rect(WIN, BLACK, LANE_4)          
             pygame.draw.rect(WIN, BLACK, pizza_refill_zone)
 
             pygame.draw.rect(WIN, BLACK, mc_hitbox)
-
             
             for i in range(len(enemy_alive)):
                 pygame.draw.rect(WIN, RED, enemy_alive[i][0])  
@@ -320,6 +331,8 @@ def Jogo():
             for i in range(len(pizzas_in_line)):
                 pygame.draw.rect(WIN, RED, pizzas_in_line[i][0])
         
+        WIN.blit(COUNTER, (WIDTH * 0.24 // 1, HEIGHT * 0.2 // 1))
+
         for i in range(len(enemy_alive)):
                 WIN.blit(all_enemies[enemy_alive[i][1][0]][enemy_alive[i][1][1]][sprite_order % 3], 
                 (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 20)
@@ -348,6 +361,8 @@ def MainMenu():
     print("Fazer")
 
 def PositionHandling():
+    global hit_is_taken
+
     for i in range(len(mc_projectiles)):
         mc_projectiles[i][0].x += 2 // 1
         if mc_projectiles[i][1][0] == 4:
@@ -370,14 +385,20 @@ def PositionHandling():
             mc_projectiles[i][1][1] = False
 
     for i in range(len(enemy_alive)):
-        enemy_alive[i][0].x -= (enemy_alive[i][1][2]) // 1
-    
+        if enemy_alive[i][0].x > WIDTH * 0.32 // 1:
+            enemy_alive[i][0].x -= (enemy_alive[i][1][2]) // 1
+        else:
+            enemy_alive[i][1][3] = 0
+            hit_is_taken += 1
+
     for i in range(len(pizzas_in_line)):
         if pizzas_in_line[i][0].y > 354 + ((i - 1) * 64):
             pizzas_in_line[i][0].y -= (pizzas_in_line[i][1][1]) //1
 
 def ColissionHandling():
     global holding_pizzas
+    global hit_is_taken
+    global hit_poits
 
     for i in range(len(mc_projectiles)):
         for i2 in range(len(enemy_alive)):
@@ -403,6 +424,10 @@ def ColissionHandling():
                 holding_pizzas += 1
                 pizzas_in_line[i][1][2] = False
                 temp_pizza_sprite.append(pizzas_in_line[i][1][0])
+    
+    if hit_is_taken > 0:
+        hit_poits = hit_poits - hit_is_taken
+        hit_is_taken = 0
 
 def SpawnEnemy():
     enemy_hitbox = pygame.Rect(WIDTH + DEFAULT_CHARACTER_WIDHT, 
@@ -465,9 +490,13 @@ def explosion():
             for i2 in range(len(enemy_alive)):
                 if mc_projectiles[i][0].colliderect(enemy_alive[i2][0]) and mc_projectiles[i][1][1] == True:
                     enemy_alive[i2][1][3] -= 1
-                    if i2 == len(enemy_basico_hitbox) -1 and len(enemy_basico_hitbox) -1 > 0: 
+                    if i2 == len(enemy_basico_hitbox) -1: 
                         mc_projectiles[i][1][1] = False
 
 def intro():
     print("Fazer")
+
+def GameOver():
+    global run
+    run = False
 Jogo()
