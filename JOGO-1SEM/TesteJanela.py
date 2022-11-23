@@ -234,11 +234,11 @@ run = True
 CustomEvent1 = pygame.event.custom_type() + 1
 SpawnEnemyEvent = pygame.event.Event(CustomEvent1)
 
-#funções
-
 def Jogo():
+    global sprite_order
     global all_pizzas
     global run
+    global all_enemies
     all_pizzas = [PIZZA1, PIZZA2, PIZZA3, PIZZA4, PIZZA5, PIZZA6, PIZZA7]   
     all_adults = [Adult1, Adult2, Adult3, Adult4]
     all_students = [Student1]
@@ -246,7 +246,7 @@ def Jogo():
 
     sprite_order = 0
     spawn_rate = 0
-    fire_rate = 3000
+    fire_rate = 0
 
     point_time = 0
     point_time1 = 0
@@ -270,7 +270,7 @@ def Jogo():
             point_time1 = run_time
             sprite_order += 1
 
-        if run_time - point_time2 > fire_rate:
+        if run_time - point_time2 > fire_rate and fire_rate != 0:
             if len(pizzas_in_line) < max_pizzas_in_line: 
                 point_time2 = run_time
                 SpawnPizza()
@@ -294,58 +294,62 @@ def Jogo():
         PositionHandling()
         ColissionHandling()
         RemoveEntities()
+        ScreenUpdate()
         if hit_poits <= 0:
             GameOver()
 
-        #UPDATE DA TELA
-        
-        #preenche a tela
-        WIN.blit(BACKGROUND_1, (0, 0))
-        show_hitboxes = False
-        if show_hitboxes == True:
-            pygame.draw.rect(WIN, WHITE, LANE_1)
-            pygame.draw.rect(WIN, BLACK, LANE_2)
-            pygame.draw.rect(WIN, WHITE, LANE_3)
-            pygame.draw.rect(WIN, BLACK, LANE_4)          
-            pygame.draw.rect(WIN, BLACK, pizza_refill_zone)
-
-            pygame.draw.rect(WIN, BLACK, mc_hitbox)
-            
-            for i in range(len(enemy_alive)):
-                pygame.draw.rect(WIN, RED, enemy_alive[i][0])  
-            
-
-            for i in range(len(mc_projectiles)):
-                pygame.draw.rect(WIN, RED, mc_projectiles[i][0])
-            
-            for i in range(len(pizzas_in_line)):
-                pygame.draw.rect(WIN, RED, pizzas_in_line[i][0])
-        
-        WIN.blit(COUNTER, (WIDTH * 0.24 // 1, HEIGHT * 0.2 // 1))
-
-        for i in range(len(enemy_alive)):
-                WIN.blit(all_enemies[enemy_alive[i][1][0]][enemy_alive[i][1][1]][sprite_order % 3], 
-                (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 20)
-                )
- 
-
-        for i in range(len(mc_projectiles)):
-            WIN.blit(all_pizzas[mc_projectiles[i][1][0]][(sprite_order % 4)], 
-            (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
-            )
-        
-        for i in range(len(pizzas_in_line)):
-            WIN.blit(all_pizzas[pizzas_in_line[i][1][0]][0], (pizzas_in_line[i][0].x,
-            pizzas_in_line[i][0].y)
-            )
-
-        WIN.blit(Get_Sprite(34 + (128 * (sprite_order % 18)), 32, 72, 64, 0), (mc_hitbox.x, mc_hitbox.y))
-
-        pygame.display.update()
-        
-
         CLOCK.tick(FPS)
     pygame.quit()
+
+def ScreenUpdate():
+    for i in (range(0, 5)):
+        WIN.blit(Get_Sprite(145, 268, 70, 71, 1), (0 + (70 * i), HEIGHT * 0.20))
+        for i2 in (range(0, 8)):
+            WIN.blit(Get_Sprite(145, 268, 70, 71, 1), (0 + (70 * i), HEIGHT * 0.20 + (71 * i2)))
+    show_hitboxes = True
+    if show_hitboxes == True:
+        pygame.draw.rect(WIN, WHITE, LANE_1)
+        pygame.draw.rect(WIN, BLACK, LANE_2)
+        pygame.draw.rect(WIN, WHITE, LANE_3)
+        pygame.draw.rect(WIN, BLACK, LANE_4)          
+        pygame.draw.rect(WIN, BLACK, pizza_refill_zone)
+
+        pygame.draw.rect(WIN, BLACK, mc_hitbox)
+        
+        for i in range(len(enemy_alive)):
+            pygame.draw.rect(WIN, RED, enemy_alive[i][0])  
+        
+
+        for i in range(len(mc_projectiles)):
+            pygame.draw.rect(WIN, RED, mc_projectiles[i][0])
+        
+        for i in range(len(pizzas_in_line)):
+            pygame.draw.rect(WIN, RED, pizzas_in_line[i][0])
+    
+    WIN.blit(COUNTER, (WIDTH * 0.24 // 1, HEIGHT * 0.2 // 1))
+    WIN.blit(Get_Sprite(0 + (sprite_order % 6 + 1) * 64, 0, 64, 64, 2), (pizza_refill_zone.x, pizza_refill_zone.y))
+    for i in range(0, 6):
+        WIN.blit(Get_Sprite(0 + (sprite_order % 6 + 1) * 64, 64, 64, 64, 2), (pizza_refill_zone.x, pizza_refill_zone.y + (i + 1) * 64))
+
+    for i in range(len(enemy_alive)):
+            WIN.blit(all_enemies[enemy_alive[i][1][0]][enemy_alive[i][1][1]][sprite_order % 3], 
+            (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 20)
+            )
+
+
+    for i in range(len(mc_projectiles)):
+        WIN.blit(all_pizzas[mc_projectiles[i][1][0]][(sprite_order % 4)], 
+        (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
+        )
+    
+    for i in range(len(pizzas_in_line)):
+        WIN.blit(all_pizzas[pizzas_in_line[i][1][0]][0], (pizzas_in_line[i][0].x,
+        pizzas_in_line[i][0].y)
+        )
+
+    WIN.blit(Get_Sprite(34 + (128 * (sprite_order % 18)), 32, 72, 64, 0), (mc_hitbox.x, mc_hitbox.y))
+
+    pygame.display.update()
 
 def MainMenu():
     print("Fazer")
@@ -489,15 +493,23 @@ def Intro():
 def GameOver():
     global run
     run = False
+    print("Game Over")
 
 def Load_Sprite():
     mc_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Panda', 'Idle', 'Pizza_Panda_Idle.png')).convert()
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
     sprite_sheets.append(mc_sheet)
 
+    bg_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'MainCenario.png'))
+    bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))
+    sprite_sheets.append(bg_sheet)
+
+    conveyor_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'Esteira.png'))
+    sprite_sheets.append(conveyor_sheet)
+    
 def Get_Sprite(x, y, w, h, sheet):
     sprite = pygame.Surface((w, h))
-    sprite.set_colorkey((255, 0, 0))
+    #sprite.set_colorkey((255, 0, 0))
     sprite.blit(sprite_sheets[sheet],(0, 0), (x, y, w, h))
     return sprite
 
