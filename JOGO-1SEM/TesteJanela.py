@@ -20,17 +20,17 @@ CLOCK = pygame.time.Clock()
 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT = (64, 64)
 
-LANE_1 = pygame.Rect((WIDTH - ((WIDTH * 0.75) // 1)), (HEIGHT - ((HEIGHT * 0.20) // 1)), 
-    (WIDTH * 0.75) // 1, (HEIGHT * 0.20) // 1
+LANE_1 = pygame.Rect((WIDTH - (WIDTH * 0.75)), (HEIGHT - (HEIGHT * 0.20)), 
+    (WIDTH * 0.75), (HEIGHT * 0.20)
 )
-LANE_2 = pygame.Rect((WIDTH - ((WIDTH * 0.75) // 1)), (HEIGHT - ((HEIGHT * 0.20) // 1) * 2), 
-    (WIDTH * 0.75) // 1, (HEIGHT * 0.20) // 1
+LANE_2 = pygame.Rect((WIDTH - (WIDTH * 0.75)), (HEIGHT - (HEIGHT * 0.20) * 2), 
+    (WIDTH * 0.75), (HEIGHT * 0.20)
 )
-LANE_3 = pygame.Rect((WIDTH - ((WIDTH * 0.75) // 1)), (HEIGHT - ((HEIGHT * 0.20) // 1) * 3), 
-    (WIDTH * 0.75) // 1, (HEIGHT * 0.20) // 1
+LANE_3 = pygame.Rect((WIDTH - ((WIDTH * 0.75))), (HEIGHT - (HEIGHT * 0.20) * 3), 
+    (WIDTH * 0.75), (HEIGHT * 0.20)
 )
-LANE_4 = pygame.Rect((WIDTH - ((WIDTH * 0.75) // 1)), (HEIGHT - ((HEIGHT * 0.20) // 1) * 4), 
-    (WIDTH * 0.75) // 1, (HEIGHT * 0.20) // 1
+LANE_4 = pygame.Rect((WIDTH - (WIDTH * 0.75)), (HEIGHT - (HEIGHT * 0.20) * 4), 
+    (WIDTH * 0.75), (HEIGHT * 0.20)
 )
 
 BACKGROUND_1 = pygame.image.load(
@@ -195,14 +195,14 @@ Adult4_3 = pygame.transform.scale(Adult4_3, (105, 105))
 Adult4 = [Adult4_0, Adult4_1, Adult4_2, Adult4_3]
 
 COUNTER = pygame.image.load( os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'BalcaoTerminado.png'))
-COUNTER = pygame.transform.scale(COUNTER, (WIDTH * 0.08 // 1, HEIGHT * 0.8 // 1))
+COUNTER = pygame.transform.scale(COUNTER, (WIDTH * 0.08, HEIGHT * 0.8 ))
 
 #HUD_HP = 
 
 playing = False
     #hitboxes
 mc_hitbox = pygame.Rect(250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
-pizza_refill_zone = pygame.Rect(0, ((HEIGHT - (HEIGHT * 0.20) * 3) // 1), (WIDTH * 0.05 // 1), (HEIGHT * 0.70 // 1))
+pizza_refill_zone = pygame.Rect(0, HEIGHT - (HEIGHT * 0.20) * 3, WIDTH * 0.05, HEIGHT * 0.70)
     #Listas
 mc_projectiles = []
 lanes_pos = [LANE_1.y, LANE_2.y, LANE_3.y, LANE_4.y]
@@ -245,8 +245,8 @@ def Jogo():
     all_enemies = [all_adults, all_students]
 
     sprite_order = 0
-    spawn_rate = 0
-    fire_rate = 0
+    spawn_rate = 4000
+    fire_rate = 3000
 
     point_time = 0
     point_time1 = 0
@@ -283,7 +283,7 @@ def Jogo():
                 run = False
         
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
+                if event.key == pygame.K_SPACE:
                     if holding_pizzas > 0:
                         SpawnProjectile()
                         holding_pizzas -= 1
@@ -314,7 +314,7 @@ def ScreenUpdate():
         pygame.draw.rect(WIN, BLACK, LANE_4)          
         pygame.draw.rect(WIN, BLACK, pizza_refill_zone)
 
-        pygame.draw.rect(WIN, BLACK, mc_hitbox)
+        pygame.draw.rect(WIN, RED, mc_hitbox)
         
         for i in range(len(enemy_alive)):
             pygame.draw.rect(WIN, RED, enemy_alive[i][0])  
@@ -326,10 +326,13 @@ def ScreenUpdate():
         for i in range(len(pizzas_in_line)):
             pygame.draw.rect(WIN, RED, pizzas_in_line[i][0])
     
-    WIN.blit(COUNTER, (WIDTH * 0.24 // 1, HEIGHT * 0.2 // 1))
+    WIN.blit(COUNTER, (WIDTH * 0.24, HEIGHT * 0.2))
+
     WIN.blit(Get_Sprite(0 + (sprite_order % 6 + 1) * 64, 0, 64, 64, 2), (pizza_refill_zone.x, pizza_refill_zone.y))
     for i in range(0, 6):
         WIN.blit(Get_Sprite(0 + (sprite_order % 6 + 1) * 64, 64, 64, 64, 2), (pizza_refill_zone.x, pizza_refill_zone.y + (i + 1) * 64))
+
+    WIN.blit(Get_Sprite(223, 27 + (5 - hit_poits) * 44, 149, 38, 3), (120, 150))
 
     for i in range(len(enemy_alive)):
             WIN.blit(all_enemies[enemy_alive[i][1][0]][enemy_alive[i][1][1]][sprite_order % 3], 
@@ -358,7 +361,7 @@ def PositionHandling():
     global hit_is_taken
 
     for i in range(len(mc_projectiles)):
-        mc_projectiles[i][0].x += 2 // 1
+        mc_projectiles[i][0].x += 2
         if mc_projectiles[i][1][0] == 4:
             
             if mc_projectiles[i][0].y < 150:
@@ -371,7 +374,7 @@ def PositionHandling():
                 mc_projectiles[i][0].y -= bounce_yspeed //1
 
             else:
-                mc_projectiles[i][0].y += bounce_yspeed // 1
+                mc_projectiles[i][0].y += bounce_yspeed
 
         if mc_projectiles[i][0].x > WIDTH:
             mc_projectiles[i][1][1] = False
@@ -379,8 +382,8 @@ def PositionHandling():
             mc_projectiles[i][1][1] = False
 
     for i in range(len(enemy_alive)):
-        if enemy_alive[i][0].x > WIDTH * 0.32 // 1:
-            enemy_alive[i][0].x -= (enemy_alive[i][1][2]) // 1
+        if enemy_alive[i][0].x > WIDTH * 0.32:
+            enemy_alive[i][0].x -= (enemy_alive[i][1][2])
         else:
             enemy_alive[i][1][3] = 0
             hit_is_taken += 1
@@ -495,7 +498,7 @@ def GameOver():
     run = False
     print("Game Over")
 
-def Load_Sprite():
+def Load_Sprite_Game():
     mc_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Panda', 'Idle', 'Pizza_Panda_Idle.png')).convert()
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
     sprite_sheets.append(mc_sheet)
@@ -507,9 +510,12 @@ def Load_Sprite():
     conveyor_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'Esteira.png'))
     sprite_sheets.append(conveyor_sheet)
     
+    HUD_hp_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Hud', 'Vida.png'))
+    sprite_sheets.append(HUD_hp_sheet)
+
 def Get_Sprite(x, y, w, h, sheet):
     sprite = pygame.Surface((w, h))
-    #sprite.set_colorkey((255, 0, 0))
+    #sprite.set_colorkey((GREEN))
     sprite.blit(sprite_sheets[sheet],(0, 0), (x, y, w, h))
     return sprite
 
@@ -520,10 +526,10 @@ def Movement(keys_pressed, mc_hitbox):
     if keys_pressed[pygame.K_d] and (mc_hitbox.x + DEFAULT_CHARACTER_WIDHT) + vel < WIDTH // 4:
             mc_hitbox.x += vel
 
-    if keys_pressed[pygame.K_w] and mc_hitbox.y - vel > 0 + ((HEIGHT * 0.20 // 1)):
+    if keys_pressed[pygame.K_w] and mc_hitbox.y - vel > 0 + ((HEIGHT * 0.20)):
             mc_hitbox.y -= vel
 
     if keys_pressed[pygame.K_s] and mc_hitbox.y + vel < HEIGHT - DEFAULT_CHARACTER_HEIGHT:
             mc_hitbox.y += vel
-Load_Sprite()
+Load_Sprite_Game()
 Jogo()
