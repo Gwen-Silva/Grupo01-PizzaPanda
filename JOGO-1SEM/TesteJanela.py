@@ -9,6 +9,7 @@ pygame.init()
 WIDTH, HEIGHT = 1280, 720
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Super Pizza Panic")
+pygame.display.toggle_fullscreen()
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -33,19 +34,7 @@ LANE_4 = pygame.Rect((WIDTH - (WIDTH * 0.75)), (HEIGHT - (HEIGHT * 0.20) * 4),
     (WIDTH * 0.75), (HEIGHT * 0.20)
 )
 
-BACKGROUND_1 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Background.jpg')
-)
-BACKGROUND_1 = pygame.transform.scale(BACKGROUND_1, (WIDTH, HEIGHT)
-)
-
-MAIN_CHARACTER = pygame.image.load(
-    os.path.join('JOGO-1SEM','Assets', 'Pizza_Panda.png')
-)
-MAIN_CHARACTER = pygame.transform.scale(
-    MAIN_CHARACTER, (DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
-)
-
+run_menu = True
 
 PIZZA1_0 = pygame.image.load(
     os.path.join('JOGO-1SEM','Assets', 'Itens', 'Pizzas', '1.png')
@@ -94,25 +83,6 @@ PIZZA6 = [PIZZA6_0, PIZZA6_0, PIZZA6_0, PIZZA6_0]
 PIZZA7_0 = pygame.image.load(os.path.join('JOGO-1SEM','Assets', 'Missing_Sprite.png'))
 
 PIZZA7 = [PIZZA7_0, PIZZA7_0, PIZZA7_0, PIZZA7_0]
-Student1_0 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Student1', '0.png')
-)
-Student1_1 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Student1', '1.png')
-)
-Student1_2 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Student1', '2.png')
-)
-Student1_3 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Student1', '3.png')
-)
-
-Student1_0 = pygame.transform.scale(Student1_0, (105, 105))
-Student1_1 = pygame.transform.scale(Student1_1, (105, 105))
-Student1_2 = pygame.transform.scale(Student1_2, (105, 105))
-Student1_3 = pygame.transform.scale(Student1_3, (105, 105))
-
-Student1 = [Student1_0, Student1_1, Student1_2, Student1_3]
 
 Adult1_0 = pygame.image.load(
     os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult1', '0.png')
@@ -204,10 +174,6 @@ def Jogo():
 
     global holding_pizzas
     global hit_points
-    global game_over
-    #hitboxes
-    mc_hitbox = pygame.Rect(250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
-    pizza_refill_zone = pygame.Rect(0, HEIGHT - (HEIGHT * 0.20) * 3, WIDTH * 0.05, HEIGHT * 0.70)
 
     #Listas
     lanes_pos = [LANE_1.y, LANE_2.y, LANE_3.y, LANE_4.y]    
@@ -216,13 +182,17 @@ def Jogo():
     pizzas_in_line = []
     temp_pizza_sprite = []
 
-    #inimigos
+    #hitboxes
+    mc_hitbox = pygame.Rect(250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
+    pizza_refill_zone = pygame.Rect(0, HEIGHT - (HEIGHT * 0.20) * 3, WIDTH * 0.05, HEIGHT * 0.70)
     enemy_basico_hitbox = pygame.Rect(WIDTH  - DEFAULT_CHARACTER_WIDHT, (lanes_pos[randint(0, 3)]), 
     DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
+
     #velocidades
     vel = 5
-    projectile_vel = 5
+    projectile_vel = 2
     pizza_vel = 1
+    enemy_vel = 1
 
     #limites
     max_pizzas_in_line = 6
@@ -235,28 +205,32 @@ def Jogo():
     bounce_yspeed = 3
     explosion_size = 300
 
-    #essêncial
+    #Estados
     run = True
-    game_over = 0
+    playing = True
 
     #EVENTOS
     CustomEvent1 = pygame.event.custom_type() + 1
     SpawnEnemyEvent = pygame.event.Event(CustomEvent1)
+
+    #sprites desatualizados
     all_pizzas = [PIZZA1, PIZZA2, PIZZA3, PIZZA4, PIZZA5, PIZZA6, PIZZA7]   
     all_adults = [Adult1, Adult2, Adult3, Adult4]
-    all_students = [Student1]
-    all_enemies = [all_adults, all_students]
+    all_enemies = [all_adults]
 
 
-    sprite_order = 0
+    #ControleDeSpawn
     spawn_rate = 4000
     fire_rate = 3000
 
+    #ControleDeSprites
+    sprite_order = 0
+    sprite_time = 80
+
+    #Timers
     point_time = 0
     point_time1 = 0
     point_time2 = 0
-
-    playing = True
 
     def ScreenUpdate():
         for i in (range(0, 5)):
@@ -316,7 +290,7 @@ def Jogo():
         hit_is_taken = 0
 
         for i in range(len(mc_projectiles)):
-            mc_projectiles[i][0].x += 2
+            mc_projectiles[i][0].x += projectile_vel
             if mc_projectiles[i][1][0] == 4:
                 
                 if mc_projectiles[i][0].y < 150:
@@ -384,7 +358,7 @@ def Jogo():
     def SpawnEnemy():
         enemy_hitbox = pygame.Rect(WIDTH + DEFAULT_CHARACTER_WIDHT, 
         (lanes_pos[randint(0, 3)] + 40), DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
-        enemy_stats = [0, randint(0, 3), 1, 1]
+        enemy_stats = [0, randint(0, 3), 1, enemy_vel]
         enemy_alive.append([enemy_hitbox, enemy_stats])
 
     def SpawnProjectile():
@@ -467,7 +441,7 @@ def Jogo():
             point_time = run_time
             pygame.event.post(SpawnEnemyEvent)
 
-        if run_time - point_time1 > 80:
+        if run_time - point_time1 > sprite_time:
             point_time1 = run_time
             sprite_order += 1
 
@@ -512,22 +486,21 @@ def Jogo():
 def GameOver():
     print("Game Over")
 
-fimMenu = False   
 def MainMenu():
     global run
-    global fimMenu
-    while not fimMenu:
+    global run_menu
+    while  run_menu:
         WIN.fill(WHITE)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                fimMenu = True
+                run_menu = False
         
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_j:
                     Jogo()
-                if event.key == pygame.K_s:
-                    fimMenu = True
+                if event.key == pygame.K_ESCAPE:
+                    run_menu = False
         
         pygame.display.update()
 
