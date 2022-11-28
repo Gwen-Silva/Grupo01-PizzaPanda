@@ -129,7 +129,7 @@ def Jogo():
         for i in range(0, 6):
             WIN.blit(Get_Sprite(0 + (sprite_order % 6 + 1) * 64, 64, 64, 64, 2), (pizza_refill_zone.x, pizza_refill_zone.y + (i + 1) * 64))
 
-        WIN.blit(Get_Sprite(223, 27 + (5 - hit_points) * 44, 149, 38, 3), (120, 150))
+        WIN.blit(Get_Sprite(223, 27 + (5 - hit_points) * 44, 149, 38, 3), (1100, 40))
 
         for i in range(len(enemy_alive)):
                 WIN.blit(Get_Sprite(40 + (sprite_order % 3) * 128, 12 + (enemy_alive[i][1][1] * 128), 40, 92, 4), 
