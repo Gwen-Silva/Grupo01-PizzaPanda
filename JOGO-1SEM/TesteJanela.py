@@ -100,13 +100,10 @@ def Jogo():
     point_time2 = 0
 
     def ScreenUpdate():
-        for i in (range(0, 5)):
-            WIN.blit(Get_Sprite(145, 268, 70, 71, 1), (0 + (70 * i), HEIGHT * 0.20))
-            for i2 in (range(0, 8)):
-                WIN.blit(Get_Sprite(145, 268, 70, 71, 1), (0 + (70 * i), HEIGHT * 0.20 + (71 * i2)))
+        WIN.blit(Get_Sprite(0, 0, 320, 576, 7), (0, HEIGHT * 0.20))
         
-        WIN.blit(Get_Sprite(602.5, 333.3, 336.25, 1054, 5), (0, 0))
-        show_hitboxes = True
+        WIN.blit(Get_Sprite(0, 0, 960, 576, 6), (WIDTH * 0.25, HEIGHT * 0.20))
+        show_hitboxes = False
         if show_hitboxes == True:
             pygame.draw.rect(WIN, WHITE, LANE_1)
             pygame.draw.rect(WIN, BLACK, LANE_2)
@@ -135,8 +132,8 @@ def Jogo():
         WIN.blit(Get_Sprite(223, 27 + (5 - hit_points) * 44, 149, 38, 3), (120, 150))
 
         for i in range(len(enemy_alive)):
-                WIN.blit(Get_Sprite(40, 12, 40, 88, 4), 
-                (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 20)
+                WIN.blit(Get_Sprite(40 + (sprite_order % 3) * 128, 12 + (enemy_alive[i][1][1] * 128), 40, 92, 4), 
+                (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 16)
                 )
 
 
@@ -148,10 +145,9 @@ def Jogo():
                 (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
                 )
             else:
-                WIN.blit(pygame.transform.rotate(
+                WIN.blit(
                     Get_Sprite(0 + (((mc_projectiles[i][1][0])%3)*64),
                     0 + (((mc_projectiles[i][1][0])//3)*64), 64, 64, 5), 
-                    (270)), 
                     (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
                 )
 
@@ -394,13 +390,12 @@ def Load_Sprite_Game():
     HUD_hp_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Hud', 'Vida.png'))    
     enemy_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adultos.png'))
     projectile_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Itens', 'PizzasFinal.png'))
-    chao_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'ChãoFinal.png'))
+    chao_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'ChaoFinal.png'))
+    cozinha_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'ChaoCozinha.png'))
 
     bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))    
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
     projectile_sheet = pygame.transform.scale(projectile_sheet, (768 * 0.25, 768 * 0.25))
-    enemy_sheet = pygame.transform.scale2x(enemy_sheet)
-    chao_sheet = pygame.transform.scale(chao_sheet, (2560, 1440))
 
     sprite_sheets.append(mc_sheet)
     sprite_sheets.append(bg_sheet)
@@ -409,6 +404,7 @@ def Load_Sprite_Game():
     sprite_sheets.append(enemy_sheet)
     sprite_sheets.append(projectile_sheet)
     sprite_sheets.append(chao_sheet)
+    sprite_sheets.append(cozinha_sheet)
 
 def Get_Sprite(x, y, w, h, sheet):
     sprite = pygame.Surface((w, h))
