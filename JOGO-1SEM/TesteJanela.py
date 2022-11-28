@@ -35,6 +35,7 @@ LANE_4 = pygame.Rect((WIDTH - (WIDTH * 0.75)), (HEIGHT - (HEIGHT * 0.20) * 4),
 )
 
 run_menu = True
+run_intro = True
 
 COUNTER = pygame.image.load( os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'BalcaoTerminado.png'))
 COUNTER = pygame.transform.scale(COUNTER, (WIDTH * 0.08, HEIGHT * 0.8 ))
@@ -103,6 +104,8 @@ def Jogo():
             WIN.blit(Get_Sprite(145, 268, 70, 71, 1), (0 + (70 * i), HEIGHT * 0.20))
             for i2 in (range(0, 8)):
                 WIN.blit(Get_Sprite(145, 268, 70, 71, 1), (0 + (70 * i), HEIGHT * 0.20 + (71 * i2)))
+        
+        WIN.blit(Get_Sprite(602.5, 333.3, 336.25, 1054, 5), (0, 0))
         show_hitboxes = True
         if show_hitboxes == True:
             pygame.draw.rect(WIN, WHITE, LANE_1)
@@ -132,7 +135,7 @@ def Jogo():
         WIN.blit(Get_Sprite(223, 27 + (5 - hit_points) * 44, 149, 38, 3), (120, 150))
 
         for i in range(len(enemy_alive)):
-                WIN.blit(Get_Sprite(0, 0, 64, 64, 4), 
+                WIN.blit(Get_Sprite(40, 12, 40, 88, 4), 
                 (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 20)
                 )
 
@@ -145,15 +148,16 @@ def Jogo():
                 (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
                 )
             else:
-                WIN.blit(pygame.transform.rotate(Get_Sprite(0 + (((mc_projectiles[i][1][0])%3)*64),
-                0 + (((mc_projectiles[i][1][0]) // 3)*64), 64, 64, 5), 
-                (270)), 
-                (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
+                WIN.blit(pygame.transform.rotate(
+                    Get_Sprite(0 + (((mc_projectiles[i][1][0])%3)*64),
+                    0 + (((mc_projectiles[i][1][0])//3)*64), 64, 64, 5), 
+                    (270)), 
+                    (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
                 )
 
         for i in range(len(pizzas_in_line)):
             WIN.blit(Get_Sprite(0 + (((pizzas_in_line[i][1][0])%3)*64),
-            0 + (((pizzas_in_line[i][1][0]) // 3)*64), 64, 64, 5), 
+            0 + (((pizzas_in_line[i][1][0])//3)*64), 64, 64, 5), 
             (pizzas_in_line[i][0].x, pizzas_in_line[i][0].y)
             )
 
@@ -390,10 +394,13 @@ def Load_Sprite_Game():
     HUD_hp_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Hud', 'Vida.png'))    
     enemy_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adultos.png'))
     projectile_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Itens', 'PizzasFinal.png'))
+    chao_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'ChãoFinal.png'))
 
     bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))    
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
     projectile_sheet = pygame.transform.scale(projectile_sheet, (768 * 0.25, 768 * 0.25))
+    enemy_sheet = pygame.transform.scale2x(enemy_sheet)
+    chao_sheet = pygame.transform.scale(chao_sheet, (2560, 1440))
 
     sprite_sheets.append(mc_sheet)
     sprite_sheets.append(bg_sheet)
@@ -401,6 +408,7 @@ def Load_Sprite_Game():
     sprite_sheets.append(HUD_hp_sheet)
     sprite_sheets.append(enemy_sheet)
     sprite_sheets.append(projectile_sheet)
+    sprite_sheets.append(chao_sheet)
 
 def Get_Sprite(x, y, w, h, sheet):
     sprite = pygame.Surface((w, h))
@@ -409,7 +417,14 @@ def Get_Sprite(x, y, w, h, sheet):
     return sprite
     
 def Intro():
-    print("Fazer")
+    point_time = 0
+    while run_intro:
+        current = pygame.time.get_ticks()
+        WIN.fill(BLACK)
+
+
+
+        CLOCK.tick(FPS)
 
 MainMenu()
 pygame.quit()
