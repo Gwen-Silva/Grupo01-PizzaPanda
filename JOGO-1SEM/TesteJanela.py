@@ -35,134 +35,7 @@ LANE_4 = pygame.Rect((WIDTH - (WIDTH * 0.75)), (HEIGHT - (HEIGHT * 0.20) * 4),
 )
 
 run_menu = True
-
-PIZZA1_0 = pygame.image.load(
-    os.path.join('JOGO-1SEM','Assets', 'Itens', 'Pizzas', '1.png')
-)
-PIZZA1_1 = pygame.transform.rotate(PIZZA1_0, 90)
-PIZZA1_2 = pygame.transform.rotate(PIZZA1_0, 180)
-PIZZA1_3 = pygame.transform.rotate(PIZZA1_0, 270)
-
-PIZZA1 = [PIZZA1_0, PIZZA1_1, PIZZA1_2, PIZZA1_3]
-
-PIZZA2_0 = pygame.image.load(
-    os.path.join('JOGO-1SEM','Assets', 'Itens', 'Pizzas', '2.png')
-)
-PIZZA2_1 = pygame.transform.rotate(PIZZA2_0, 90)
-PIZZA2_2 = pygame.transform.rotate(PIZZA2_0, 180)
-PIZZA2_3 = pygame.transform.rotate(PIZZA2_0, 270)
-PIZZA2 = [PIZZA2_0, PIZZA2_1, PIZZA2_2, PIZZA2_3]
-
-PIZZA3_0 = pygame.image.load(
-    os.path.join('JOGO-1SEM','Assets', 'Itens', 'Pizzas', '3.png')
-)
-PIZZA3_1 = pygame.transform.rotate(PIZZA3_0, 90)
-PIZZA3_2 = pygame.transform.rotate(PIZZA3_0, 180)
-PIZZA3_3 = pygame.transform.rotate(PIZZA3_0, 270)
-
-PIZZA3 = [PIZZA3_0, PIZZA3_1, PIZZA3_2, PIZZA3_3]
-
-PIZZA4_0 = pygame.image.load(
-    os.path.join('JOGO-1SEM','Assets', 'Itens', 'Pizzas', '4.png')
-)
-
-PIZZA4_1 = pygame.transform.rotate(PIZZA4_0, 90)
-PIZZA4_2 = pygame.transform.rotate(PIZZA4_0, 180)
-PIZZA4_3 = pygame.transform.rotate(PIZZA4_0, 270)
-
-PIZZA4 = [PIZZA4_0, PIZZA4_1, PIZZA4_2, PIZZA4_3]
-
-PIZZA5_0 = pygame.image.load(os.path.join('JOGO-1SEM','Assets', 'Missing_Sprite.png'))
-
-PIZZA5 = [PIZZA5_0, PIZZA5_0, PIZZA5_0, PIZZA5_0]
-
-PIZZA6_0 = pygame.image.load(os.path.join('JOGO-1SEM','Assets', 'Missing_Sprite.png'))
-
-PIZZA6 = [PIZZA6_0, PIZZA6_0, PIZZA6_0, PIZZA6_0]
-
-PIZZA7_0 = pygame.image.load(os.path.join('JOGO-1SEM','Assets', 'Missing_Sprite.png'))
-
-PIZZA7 = [PIZZA7_0, PIZZA7_0, PIZZA7_0, PIZZA7_0]
-
-Adult1_0 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult1', '0.png')
-)
-Adult1_1 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult1', '1.png')
-)
-Adult1_2 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult1', '2.png')
-)
-Adult1_3 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult1', '3.png')
-)
-
-Adult1_0 = pygame.transform.scale(Adult1_0, (105, 105))
-Adult1_1 = pygame.transform.scale(Adult1_1, (105, 105))
-Adult1_2 = pygame.transform.scale(Adult1_2, (105, 105))
-Adult1_3 = pygame.transform.scale(Adult1_3, (105, 105))
-
-Adult1 = [Adult1_0, Adult1_1, Adult1_2, Adult1_3]
-
-Adult2_0 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult2', '0.png')
-)
-Adult2_1 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult2', '1.png')
-)
-Adult2_2 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult2', '2.png')
-)
-Adult2_3 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult2', '3.png')
-)
-
-Adult2_0 = pygame.transform.scale(Adult2_0, (105, 105))
-Adult2_1 = pygame.transform.scale(Adult2_1, (105, 105))
-Adult2_2 = pygame.transform.scale(Adult2_2, (105, 105))
-Adult2_3 = pygame.transform.scale(Adult2_3, (105, 105))
-
-Adult2 = [Adult2_0, Adult2_1, Adult2_2, Adult2_3]
-
-Adult3_0 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult3', '0.png')
-)
-Adult3_1 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult3', '1.png')
-)
-Adult3_2 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult3', '2.png')
-)
-Adult3_3 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult3', '3.png')
-)
-
-Adult3_0 = pygame.transform.scale(Adult3_0, (105, 105))
-Adult3_1 = pygame.transform.scale(Adult3_1, (105, 105))
-Adult3_2 = pygame.transform.scale(Adult3_2, (105, 105))
-Adult3_3 = pygame.transform.scale(Adult3_3, (105, 105))
-
-Adult3 = [Adult3_0, Adult3_1, Adult3_2, Adult3_3]
-
-Adult4_0 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult4', '0.png')
-)
-Adult4_1 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult4', '1.png')
-)
-Adult4_2 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult4', '2.png')
-)
-Adult4_3 = pygame.image.load(
-    os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adult4', '3.png')
-)
-
-Adult4_0 = pygame.transform.scale(Adult4_0, (105, 105))
-Adult4_1 = pygame.transform.scale(Adult4_1, (105, 105))
-Adult4_2 = pygame.transform.scale(Adult4_2, (105, 105))
-Adult4_3 = pygame.transform.scale(Adult4_3, (105, 105))
-
-Adult4 = [Adult4_0, Adult4_1, Adult4_2, Adult4_3]
+run_intro = True
 
 COUNTER = pygame.image.load( os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'BalcaoTerminado.png'))
 COUNTER = pygame.transform.scale(COUNTER, (WIDTH * 0.08, HEIGHT * 0.8 ))
@@ -213,12 +86,6 @@ def Jogo():
     CustomEvent1 = pygame.event.custom_type() + 1
     SpawnEnemyEvent = pygame.event.Event(CustomEvent1)
 
-    #sprites desatualizados
-    all_pizzas = [PIZZA1, PIZZA2, PIZZA3, PIZZA4, PIZZA5, PIZZA6, PIZZA7]   
-    all_adults = [Adult1, Adult2, Adult3, Adult4]
-    all_enemies = [all_adults]
-
-
     #ControleDeSpawn
     spawn_rate = 4000
     fire_rate = 3000
@@ -237,6 +104,8 @@ def Jogo():
             WIN.blit(Get_Sprite(145, 268, 70, 71, 1), (0 + (70 * i), HEIGHT * 0.20))
             for i2 in (range(0, 8)):
                 WIN.blit(Get_Sprite(145, 268, 70, 71, 1), (0 + (70 * i), HEIGHT * 0.20 + (71 * i2)))
+        
+        WIN.blit(Get_Sprite(602.5, 333.3, 336.25, 1054, 5), (0, 0))
         show_hitboxes = True
         if show_hitboxes == True:
             pygame.draw.rect(WIN, WHITE, LANE_1)
@@ -266,19 +135,30 @@ def Jogo():
         WIN.blit(Get_Sprite(223, 27 + (5 - hit_points) * 44, 149, 38, 3), (120, 150))
 
         for i in range(len(enemy_alive)):
-                WIN.blit(all_enemies[enemy_alive[i][1][0]][enemy_alive[i][1][1]][sprite_order % 3], 
+                WIN.blit(Get_Sprite(40, 12, 40, 88, 4), 
                 (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 20)
                 )
 
 
         for i in range(len(mc_projectiles)):
-            WIN.blit(all_pizzas[mc_projectiles[i][1][0]][(sprite_order % 4)], 
-            (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
-            )
-        
+            if mc_projectiles[i][1][0] != 6:
+                WIN.blit(pygame.transform.rotate(Get_Sprite(0 + (((mc_projectiles[i][1][0])%3)*64),
+                0 + (((mc_projectiles[i][1][0]) // 3)*64), 64, 64, 5), 
+                (90*(sprite_order % 4))), 
+                (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
+                )
+            else:
+                WIN.blit(pygame.transform.rotate(
+                    Get_Sprite(0 + (((mc_projectiles[i][1][0])%3)*64),
+                    0 + (((mc_projectiles[i][1][0])//3)*64), 64, 64, 5), 
+                    (270)), 
+                    (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
+                )
+
         for i in range(len(pizzas_in_line)):
-            WIN.blit(all_pizzas[pizzas_in_line[i][1][0]][0], (pizzas_in_line[i][0].x,
-            pizzas_in_line[i][0].y)
+            WIN.blit(Get_Sprite(0 + (((pizzas_in_line[i][1][0])%3)*64),
+            0 + (((pizzas_in_line[i][1][0])//3)*64), 64, 64, 5), 
+            (pizzas_in_line[i][0].x, pizzas_in_line[i][0].y)
             )
 
         WIN.blit(Get_Sprite(34 + (128 * (sprite_order % 18)), 32, 72, 64, 0), (mc_hitbox.x, mc_hitbox.y))
@@ -291,7 +171,7 @@ def Jogo():
 
         for i in range(len(mc_projectiles)):
             mc_projectiles[i][0].x += projectile_vel
-            if mc_projectiles[i][1][0] == 4:
+            if mc_projectiles[i][1][0] == 4 or mc_projectiles[i][1][0] == 5:
                 
                 if mc_projectiles[i][0].y < 150:
                     mc_projectiles[i][1][2] -= 1
@@ -330,7 +210,7 @@ def Jogo():
         for i in range(len(mc_projectiles)):
             for i2 in range(len(enemy_alive)):
                     if mc_projectiles[i][0].colliderect(enemy_alive[i2][0]) and mc_projectiles[i][1][1] == True:
-                        if mc_projectiles[i][1][0] == 6:
+                        if mc_projectiles[i][1][0] == 3:
                             mc_projectiles[i][0] = pygame.Rect(
                             mc_projectiles[i][0].x - (explosion_size * 1.5 - (mc_projectiles[i][0].w * 6) //1), 
                             mc_projectiles[i][0].y - (explosion_size - (mc_projectiles[i][0].h * 4) //1),
@@ -338,10 +218,10 @@ def Jogo():
                             )
                             explosion()
 
-                        if mc_projectiles[i][1][0] == 4:
+                        if mc_projectiles[i][1][0] == 4 or mc_projectiles[i][1][0] == 5:
                             mc_projectiles[i][1][2] -= 1
                             
-                        elif mc_projectiles[i][1][0] != 5 and mc_projectiles[i][1][0] != 6:    
+                        elif mc_projectiles[i][1][0] != 3 and mc_projectiles[i][1][0] != 6:    
                             mc_projectiles[i][1][1] = False
                         enemy_alive[i2][1][3] -= 1
 
@@ -364,7 +244,7 @@ def Jogo():
     def SpawnProjectile():
         projectile = pygame.Rect(mc_hitbox.x + mc_hitbox.width, mc_hitbox.y + mc_hitbox.height/8 , 40 , 40)
         projectile_stats = [temp_pizza_sprite[0], True]
-        if temp_pizza_sprite[0] == 4:
+        if temp_pizza_sprite[0] == 4 or temp_pizza_sprite[0] == 5:
             projectile_stats.append(max_bounces)
             mc_projectiles.append([projectile, projectile_stats])
 
@@ -376,7 +256,7 @@ def Jogo():
 
     def SpawnPizza():
         global pizza_type_control #variável de debug
-        pizza_type_control = randint(0, len(all_pizzas) - 1)
+        pizza_type_control = randint(0, 6)
         
         pizza = pygame.Rect(0, HEIGHT, 64, 64)
         pizza_stat = [pizza_type_control, pizza_vel, True]
@@ -507,19 +387,28 @@ def MainMenu():
         CLOCK.tick(FPS)      
 
 def Load_Sprite_Game():
+
     mc_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Panda', 'Idle', 'Pizza_Panda_Idle.png')).convert()
-    mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
-    sprite_sheets.append(mc_sheet)
-
     bg_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'MainCenario.png'))
-    bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))
-    sprite_sheets.append(bg_sheet)
-
     conveyor_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'Esteira.png'))
+    HUD_hp_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Hud', 'Vida.png'))    
+    enemy_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Inimigos', 'Adultos.png'))
+    projectile_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Itens', 'PizzasFinal.png'))
+    chao_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Cenario', 'ChãoFinal.png'))
+
+    bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))    
+    mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
+    projectile_sheet = pygame.transform.scale(projectile_sheet, (768 * 0.25, 768 * 0.25))
+    enemy_sheet = pygame.transform.scale2x(enemy_sheet)
+    chao_sheet = pygame.transform.scale(chao_sheet, (2560, 1440))
+
+    sprite_sheets.append(mc_sheet)
+    sprite_sheets.append(bg_sheet)
     sprite_sheets.append(conveyor_sheet)
-    
-    HUD_hp_sheet = pygame.image.load(os.path.join('JOGO-1SEM', 'Assets', 'Hud', 'Vida.png'))
     sprite_sheets.append(HUD_hp_sheet)
+    sprite_sheets.append(enemy_sheet)
+    sprite_sheets.append(projectile_sheet)
+    sprite_sheets.append(chao_sheet)
 
 def Get_Sprite(x, y, w, h, sheet):
     sprite = pygame.Surface((w, h))
@@ -528,7 +417,14 @@ def Get_Sprite(x, y, w, h, sheet):
     return sprite
     
 def Intro():
-    print("Fazer")
+    point_time = 0
+    while run_intro:
+        current = pygame.time.get_ticks()
+        WIN.fill(BLACK)
+
+
+
+        CLOCK.tick(FPS)
 
 MainMenu()
 pygame.quit()
