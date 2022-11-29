@@ -71,9 +71,9 @@ def Jogo():
 
     # velocidades
     vel = 7.5
-    projectile_vel = 5
+    projectile_vel = 8
     pizza_vel = 3
-    enemy_vel = 3
+    enemy_vel = 5
 
     # limites
     max_pizzas_in_line = 6
@@ -100,7 +100,7 @@ def Jogo():
 
     # ControleDeSprites
     sprite_order = 0
-    sprite_time = 80
+    sprite_time = 64
 
     # Timers
     point_time = 0
@@ -200,9 +200,9 @@ def Jogo():
 
         for i in range(len(enemy_alive)):
             if enemy_alive[i][0].x > WIDTH * 0.32:
-                enemy_alive[i][0].x -= (enemy_alive[i][1][2])
+                enemy_alive[i][0].x -= (enemy_alive[i][1][3])
             else:
-                enemy_alive[i][1][3] = 0
+                enemy_alive[i][1][2] = 0
                 hit_is_taken += 1
 
         for i in range(len(pizzas_in_line)):
@@ -234,7 +234,7 @@ def Jogo():
 
                     elif mc_projectiles[i][1][0] != 3 and mc_projectiles[i][1][0] != 6:
                         mc_projectiles[i][1][1] = False
-                    enemy_alive[i2][1][3] -= 1
+                    enemy_alive[i2][1][2] -= 1
 
         for i in range(len(pizzas_in_line)):
             if pizzas_in_line[i][0].colliderect(mc_hitbox):
@@ -285,7 +285,7 @@ def Jogo():
                     for_removal.append(mc_projectiles[i])
 
         for i in range(len(enemy_alive)):
-            if enemy_alive[i][1][3] < 1:
+            if enemy_alive[i][1][2] < 1:
                 for_removal2.append(enemy_alive[i])
 
         for i in range(len(pizzas_in_line)):
@@ -381,6 +381,8 @@ def GameOver():
 def MainMenu():
     global run
     global run_menu
+    global particle_order
+    global particle_order1
 
     point_time0 = 0
     point_time1 = 0
@@ -388,12 +390,6 @@ def MainMenu():
     particle_order1 = 0
 
     particle_in_screen = 0
-
-    x1 = 0
-    x2 = 0
-    y1 = 0
-    y2 = 0
-    raio = 0
 
     while run_menu:
         WIN.fill(MENU_BLUE)
@@ -409,28 +405,6 @@ def MainMenu():
             point_time1 = run_time
             particle_order1 += 0.25
 
-        for i in range(len(menu_particles)):
-
-            menu_particles[i][0][2] -= - menu_particles[i][2]
-
-            raio = (menu_particles[i][0][0] + menu_particles[i][0][1]) - menu_particles[i][0][0]
-            x1 = menu_particles[i][0][0] + raio * sin((particle_order1 * menu_particles[i][4]) * menu_particles[i][5]) 
-            y1 = menu_particles[i][0][2] + raio * cos((particle_order1 * menu_particles[i][4]) * menu_particles[i][5])
-            x2 = menu_particles[i][0][0] - raio * sin((particle_order1 * menu_particles[i][4]) * menu_particles[i][5])
-            y2 = menu_particles[i][0][2] - raio * cos((particle_order1 * menu_particles[i][4]) * menu_particles[i][5])
-
-            pygame.draw.line(WIN, YELLOW, (x1, y1), (x2, y2), menu_particles[i][1])
-
-
-        for i in range(len(menu_particles)): 
-            if menu_particles[i][0][2] > 780:
-                particles_remove.append(menu_particles[i])
-        
-        for i in range(len(particles_remove)):
-            menu_particles.remove(particles_remove[i])
-
-        particles_remove.clear()
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run_menu = False
@@ -441,6 +415,8 @@ def MainMenu():
                     Jogo()
                 if event.key == pygame.K_ESCAPE:
                     run_menu = False
+        
+        Handle_MenuParticle()
 
         pygame.display.update()
 
@@ -492,10 +468,40 @@ def Get_Sprite(x, y, w, h, sheet):
 
 
 def Create_MenuParticle():
-    particle_x = randint(-10, 1180)
+    particle_x = randint(20, 1260)
     particle_pos = [particle_x, randint(15, 50), -5]
-    menu_particles.append([particle_pos, randint(2, 5), randint(2, 10), 
+    menu_particles.append([particle_pos, randint(2, 5), randint(4, 10), 
     randint(2,4), choice([-1, 1]), choice([0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1])])
+
+
+def Handle_MenuParticle():
+    x1 = 0
+    x2 = 0
+    y1 = 0
+    y2 = 0
+    raio = 0
+
+    for i in range(len(menu_particles)):
+
+        menu_particles[i][0][2] -= - menu_particles[i][2]
+
+        raio = (menu_particles[i][0][0] + menu_particles[i][0][1]) - menu_particles[i][0][0]
+        x1 = menu_particles[i][0][0] + raio * sin((particle_order1 * menu_particles[i][4]) * menu_particles[i][5]) 
+        y1 = menu_particles[i][0][2] + raio * cos((particle_order1 * menu_particles[i][4]) * menu_particles[i][5])
+        x2 = menu_particles[i][0][0] - raio * sin((particle_order1 * menu_particles[i][4]) * menu_particles[i][5])
+        y2 = menu_particles[i][0][2] - raio * cos((particle_order1 * menu_particles[i][4]) * menu_particles[i][5])
+
+        pygame.draw.line(WIN, YELLOW, (x1, y1), (x2, y2), menu_particles[i][1])
+
+
+    for i in range(len(menu_particles)): 
+        if menu_particles[i][0][2] > 780:
+            particles_remove.append(menu_particles[i])
+    
+    for i in range(len(particles_remove)):
+        menu_particles.remove(particles_remove[i])
+
+    particles_remove.clear()
 
     
 def Intro():
