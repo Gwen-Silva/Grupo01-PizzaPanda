@@ -46,7 +46,6 @@ menu_particles = []
 particles_remove = []
 
 def Jogo():
-    Load_Sprite_Game()
 
     global holding_pizzas
     global hit_points
@@ -67,10 +66,10 @@ def Jogo():
                                       DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
 
     # velocidades
-    vel = 20
-    projectile_vel = 8
-    pizza_vel = 6
-    enemy_vel = 5
+    vel = 7
+    projectile_vel = 4
+    pizza_vel = 2
+    enemy_vel = 1
 
     # limites
     max_pizzas_in_line = 7
@@ -97,7 +96,7 @@ def Jogo():
 
     # ControleDeSprites
     sprite_order = 0
-    sprite_time = 64
+    sprite_time = 128
 
     # Timers
     point_time = 0
@@ -150,7 +149,7 @@ def Jogo():
         WIN.blit(Get_Sprite(0, 0, 60, 537, 9), (320, 155))
 
         WIN.blit(Get_Sprite(223, 27 + (5 - hit_points)
-                 * 44, 149, 38, 3), (1100, 40))
+                 * 44, 149, 38, 3), (310, 65))
 
         for i in range(len(mc_projectiles)):
             if mc_projectiles[i][1][0] != 6:
@@ -182,7 +181,7 @@ def Jogo():
             if mc_projectiles[i][1][0] != 6:
                 mc_projectiles[i][0].x += projectile_vel
             else:
-                mc_projectiles[i][0].x += projectile_vel * 0.8
+                mc_projectiles[i][0].x += projectile_vel * 0.7
 
             if mc_projectiles[i][1][0] == 4 or mc_projectiles[i][1][0] == 5:
 
@@ -328,10 +327,10 @@ def Jogo():
         if keys_pressed[pygame.K_w] and mc_hitbox.y - vel > 0 + ((HEIGHT * 0.20)):
             mc_hitbox.y -= vel
 
-        if keys_pressed[pygame.K_s] and mc_hitbox.y + vel < HEIGHT - DEFAULT_CHARACTER_HEIGHT - 20:
+        if keys_pressed[pygame.K_s] and mc_hitbox.y + vel < HEIGHT - DEFAULT_CHARACTER_HEIGHT - 28:
             mc_hitbox.y += vel
-        elif mc_hitbox.y + vel >= HEIGHT - DEFAULT_CHARACTER_HEIGHT - 20: 
-            mc_hitbox.y = HEIGHT - DEFAULT_CHARACTER_HEIGHT - 28
+        elif mc_hitbox.y + vel >= HEIGHT - DEFAULT_CHARACTER_HEIGHT - 28: 
+            mc_hitbox.y = HEIGHT - DEFAULT_CHARACTER_HEIGHT - 29
     while run:
 
         if playing == True:
@@ -399,17 +398,19 @@ def MainMenu():
     particle_order = 0
     particle_order1 = 0
 
-    particle_in_screen = 0
-
     click = False
 
-    start_button = pygame.Rect(590, 250, 100, 50)
+    start_button = pygame.Rect(295, 560, 230, 72)
+    close_button = pygame.Rect(755, 560, 230, 72)
+
     while run_menu:
+        mouseX, mouseY = pygame.mouse.get_pos()
+
         WIN.fill(MENU_BLUE)
 
         run_time = pygame.time.get_ticks()
 
-        if run_time - point_time0 > randint(0, 32) +  3 * len(menu_particles):
+        if run_time - point_time0 > randint(0, 16) +  1 * len(menu_particles):
             point_time0 = run_time
             particle_order += 1
             Create_MenuParticle()
@@ -417,21 +418,29 @@ def MainMenu():
         if run_time - point_time1 > 32:
             point_time1 = run_time
             particle_order1 += 0.25
-
-        mousex, mousey = pygame.mouse.get_pos()
-
+        
+        click = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run_menu = False
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_j:
-                    menu_particles.clear()
-                    Jogo()
-                if event.key == pygame.K_ESCAPE:
-                    run_menu = False
-        
+        if start_button.collidepoint((mouseX, mouseY)):
+            if click == True:
+                menu_particles.clear()
+                Jogo()
+
+        if close_button.collidepoint((mouseX, mouseY)):
+            if click == True:
+                run_menu = False
+    
         Handle_MenuParticle()
+
+        WIN.blit(Get_Sprite(26, 68, 460 ,386, 11), (410, 20))
+        WIN.blit(Get_Sprite(15, 84, 230 ,72, 10), (start_button.x, start_button.y))
+        WIN.blit(Get_Sprite(12, 350, 230 ,72, 10), (close_button.x, close_button.y))
 
         pygame.display.update()
 
@@ -443,28 +452,33 @@ def Load_Sprite_Game():
     mc_sheet = pygame.image.load(os.path.join(
         'JOGO-1SEM', 'Assets', 'Panda', 'Idle', 'Pizza_Panda_Idle.png')).convert()
     bg_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'MainCenario.png'))
+        'JOGO-1SEM', 'Assets', 'Cenario', 'MainCenario.png')).convert()
     conveyor_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'Esteira.png'))
+        'JOGO-1SEM', 'Assets', 'Cenario', 'Esteira.png')).convert()
     HUD_hp_sheet = pygame.image.load(os.path.join(
         'JOGO-1SEM', 'Assets', 'Hud', 'Vida.png'))
     enemy_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Inimigos', 'Adultos.png'))
+        'JOGO-1SEM', 'Assets', 'Inimigos', 'Adultos.png')).convert()
     projectile_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Itens', 'PizzasFinal.png'))
+        'JOGO-1SEM', 'Assets', 'Itens', 'PizzasFinal.png')).convert()
     chao_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'ChaoFinal.png'))
+        'JOGO-1SEM', 'Assets', 'Cenario', 'ChaoFinal.png')).convert()
     cozinha_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'ChaoCozinha.png'))
+        'JOGO-1SEM', 'Assets', 'Cenario', 'ChaoCozinha.png')).convert()
     walls_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'Scenario_Walls.png'))
+        'JOGO-1SEM', 'Assets', 'Cenario', 'Scenario_Walls.png')).convert()
     counter_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'Balcão.png'))
+        'JOGO-1SEM', 'Assets', 'Cenario', 'Balcão.png')).convert()
+    botoes_menu_sheet = pygame.image.load(os.path.join(
+        'JOGO-1SEM', 'Assets', 'Gui', 'Botoes.png')).convert()
+    titulo_menu_sheet = pygame.image.load(os.path.join(
+        'JOGO-1SEM', 'Assets', 'Gui', 'Titulo.png')).convert()
 
     bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
     projectile_sheet = pygame.transform.scale(
         projectile_sheet, (768 * 0.25, 768 * 0.25))
+    botoes_menu_sheet = pygame.transform.scale(botoes_menu_sheet, (512 * 0.5, 1024 * 0.5))
 
     sprite_sheets.append(mc_sheet)
     sprite_sheets.append(bg_sheet)
@@ -476,6 +490,8 @@ def Load_Sprite_Game():
     sprite_sheets.append(cozinha_sheet)
     sprite_sheets.append(walls_sheet)
     sprite_sheets.append(counter_sheet)
+    sprite_sheets.append(botoes_menu_sheet)
+    sprite_sheets.append(titulo_menu_sheet)
 
 
 def Get_Sprite(x, y, w, h, sheet):
@@ -530,7 +546,7 @@ def Intro():
 
         CLOCK.tick(FPS)
 
-
+Load_Sprite_Game()
 MainMenu()
 pygame.quit()
 sys.exit()
