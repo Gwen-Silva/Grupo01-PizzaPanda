@@ -24,17 +24,17 @@ CLOCK = pygame.time.Clock()
 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT = (64, 64)
 
-LANE_1 = pygame.Rect((WIDTH - (WIDTH * 0.75)), (HEIGHT - (HEIGHT * 0.20)),
-                     (WIDTH * 0.75), (HEIGHT * 0.20)
+LANE_1 = pygame.Rect((WIDTH - (WIDTH * 0.75)), 560,
+                     (WIDTH * 0.75), (120)
                      )
-LANE_2 = pygame.Rect((WIDTH - (WIDTH * 0.75)), (HEIGHT - (HEIGHT * 0.20) * 2),
-                     (WIDTH * 0.75), (HEIGHT * 0.20)
+LANE_2 = pygame.Rect((WIDTH - (WIDTH * 0.75)), 440,
+                     (WIDTH * 0.75), (120)
                      )
-LANE_3 = pygame.Rect((WIDTH - ((WIDTH * 0.75))), (HEIGHT - (HEIGHT * 0.20) * 3),
-                     (WIDTH * 0.75), (HEIGHT * 0.20)
+LANE_3 = pygame.Rect((WIDTH - ((WIDTH * 0.75))), 320,
+                     (WIDTH * 0.75), (120)
                      )
-LANE_4 = pygame.Rect((WIDTH - (WIDTH * 0.75)), (HEIGHT - (HEIGHT * 0.20) * 4),
-                     (WIDTH * 0.75), (HEIGHT * 0.20)
+LANE_4 = pygame.Rect((WIDTH - (WIDTH * 0.75)), 200,
+                     (WIDTH * 0.75), (120)
                      )
 
 run_menu = True
@@ -65,7 +65,7 @@ def Jogo():
     mc_hitbox = pygame.Rect(
         250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
     pizza_refill_zone = pygame.Rect(
-        0, HEIGHT - (HEIGHT * 0.20) * 3, WIDTH * 0.05, HEIGHT * 0.70)
+        95, HEIGHT - (HEIGHT * 0.22) * 3, WIDTH * 0.05, HEIGHT * 0.70)
     enemy_basico_hitbox = pygame.Rect(WIDTH - DEFAULT_CHARACTER_WIDHT, (lanes_pos[randint(0, 3)]),
                                       DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
 
@@ -76,7 +76,7 @@ def Jogo():
     enemy_vel = 5
 
     # limites
-    max_pizzas_in_line = 6
+    max_pizzas_in_line = 7
     max_holding_pizzas = 2
     max_bounces = 20
 
@@ -96,7 +96,7 @@ def Jogo():
 
     # ControleDeSpawn
     spawn_rate = 4000
-    fire_rate = 3000
+    fire_rate = 3200
 
     # ControleDeSprites
     sprite_order = 0
@@ -110,9 +110,8 @@ def Jogo():
     def ScreenUpdate():
         WIN.blit(Get_Sprite(0, 0, 320, 576, 7), (0, HEIGHT * 0.20))
         WIN.blit(Get_Sprite(0, 0, 960, 576, 6), (WIDTH * 0.25, HEIGHT * 0.20))
-        WIN.blit(Get_Sprite(0, 0, 1280, 720, 8), (0, 0))
-
-        show_hitboxes = False
+        
+        show_hitboxes = True
         if show_hitboxes == True:
             pygame.draw.rect(WIN, WHITE, LANE_1)
             pygame.draw.rect(WIN, BLACK, LANE_2)
@@ -139,13 +138,21 @@ def Jogo():
             WIN.blit(Get_Sprite(0 + (sprite_order % 6 + 1) * 64, 64, 64, 64, 2),
                      (pizza_refill_zone.x, pizza_refill_zone.y + (i + 1) * 64))
 
-        WIN.blit(Get_Sprite(223, 27 + (5 - hit_points)
-                 * 44, 149, 38, 3), (1100, 40))
+        for i in range(len(pizzas_in_line)):
+            WIN.blit(Get_Sprite(0 + (((pizzas_in_line[i][1][0]) % 3)*64),
+                                0 + (((pizzas_in_line[i][1][0])//3)*64), 64, 64, 5),
+                     (pizzas_in_line[i][0].x, pizzas_in_line[i][0].y)
+                     )
 
         for i in range(len(enemy_alive)):
             WIN.blit(Get_Sprite(40 + (sprite_order % 3) * 128, 12 + (enemy_alive[i][1][1] * 128), 40, 92, 4),
                      (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 16)
-                     )
+                     )                     
+
+        WIN.blit(Get_Sprite(0, 0, 1280, 720, 8), (0, 0))
+
+        WIN.blit(Get_Sprite(223, 27 + (5 - hit_points)
+                 * 44, 149, 38, 3), (1100, 40))
 
         for i in range(len(mc_projectiles)):
             if mc_projectiles[i][1][0] != 6:
@@ -162,11 +169,7 @@ def Jogo():
                     (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
                 )
 
-        for i in range(len(pizzas_in_line)):
-            WIN.blit(Get_Sprite(0 + (((pizzas_in_line[i][1][0]) % 3)*64),
-                                0 + (((pizzas_in_line[i][1][0])//3)*64), 64, 64, 5),
-                     (pizzas_in_line[i][0].x, pizzas_in_line[i][0].y)
-                     )
+
 
         WIN.blit(Get_Sprite(34 + (128 * (sprite_order % 18)),
                  32, 72, 64, 0), (mc_hitbox.x, mc_hitbox.y))
@@ -184,16 +187,16 @@ def Jogo():
                 if mc_projectiles[i][0].y < 150:
                     mc_projectiles[i][1][2] -= 1
 
-                if mc_projectiles[i][0].y > HEIGHT - 30:
+                if mc_projectiles[i][0].y > HEIGHT - 64:
                     mc_projectiles[i][1][2] -= 1
 
                 if mc_projectiles[i][1][2] % 2 == 0:
-                    mc_projectiles[i][0].y -= bounce_yspeed // 1
+                    mc_projectiles[i][0].y -= projectile_vel
 
                 else:
-                    mc_projectiles[i][0].y += bounce_yspeed
+                    mc_projectiles[i][0].y += projectile_vel
 
-            if mc_projectiles[i][0].x > WIDTH:
+            if mc_projectiles[i][0].x > 1180:
                 mc_projectiles[i][1][1] = False
             elif mc_projectiles[i][0].x < 0:
                 mc_projectiles[i][1][1] = False
@@ -206,7 +209,7 @@ def Jogo():
                 hit_is_taken += 1
 
         for i in range(len(pizzas_in_line)):
-            if pizzas_in_line[i][0].y > 354 + ((i - 1) * 64):
+            if pizzas_in_line[i][0].y > 300 + ((i - 1) * 64):
                 pizzas_in_line[i][0].y -= (pizzas_in_line[i][1][1]) // 1
 
     def ColissionHandling():
@@ -268,7 +271,7 @@ def Jogo():
         global pizza_type_control  # variável de debug
         pizza_type_control = randint(0, 6)
 
-        pizza = pygame.Rect(0, HEIGHT, 64, 64)
+        pizza = pygame.Rect(pizza_refill_zone.x, HEIGHT, 64, 64)
         pizza_stat = [pizza_type_control, pizza_vel, True]
         pizzas_in_line.append([pizza, pizza_stat])
 
