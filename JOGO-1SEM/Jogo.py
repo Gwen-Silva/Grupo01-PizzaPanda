@@ -1,4 +1,5 @@
 import os
+import sys
 import pygame
 from math import sin, cos
 from pygame.locals import *
@@ -40,10 +41,6 @@ LANE_4 = pygame.Rect((WIDTH - (WIDTH * 0.75)), 200,
 run_menu = True
 run_intro = True
 
-COUNTER = pygame.image.load(os.path.join(
-    'JOGO-1SEM', 'Assets', 'Cenario', 'BalcaoTerminado.png'))
-COUNTER = pygame.transform.scale(COUNTER, (WIDTH * 0.08, HEIGHT * 0.8))
-
 sprite_sheets = []
 menu_particles = []
 particles_remove = []
@@ -70,9 +67,9 @@ def Jogo():
                                       DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
 
     # velocidades
-    vel = 7.5
+    vel = 20
     projectile_vel = 8
-    pizza_vel = 3
+    pizza_vel = 6
     enemy_vel = 5
 
     # limites
@@ -96,7 +93,7 @@ def Jogo():
 
     # ControleDeSpawn
     spawn_rate = 4000
-    fire_rate = 3200
+    fire_rate = spawn_rate * 0.90
 
     # ControleDeSprites
     sprite_order = 0
@@ -111,7 +108,7 @@ def Jogo():
         WIN.blit(Get_Sprite(0, 0, 320, 576, 7), (0, HEIGHT * 0.20))
         WIN.blit(Get_Sprite(0, 0, 960, 576, 6), (WIDTH * 0.25, HEIGHT * 0.20))
         
-        show_hitboxes = True
+        show_hitboxes = False
         if show_hitboxes == True:
             pygame.draw.rect(WIN, WHITE, LANE_1)
             pygame.draw.rect(WIN, BLACK, LANE_2)
@@ -130,7 +127,6 @@ def Jogo():
             for i in range(len(pizzas_in_line)):
                 pygame.draw.rect(WIN, RED, pizzas_in_line[i][0])
 
-        WIN.blit(COUNTER, (WIDTH * 0.24, HEIGHT * 0.2))
 
         WIN.blit(Get_Sprite(0 + (sprite_order % 6 + 1) * 64, 0, 64,
                  64, 2), (pizza_refill_zone.x, pizza_refill_zone.y))
@@ -146,10 +142,12 @@ def Jogo():
 
         for i in range(len(enemy_alive)):
             WIN.blit(Get_Sprite(40 + (sprite_order % 3) * 128, 12 + (enemy_alive[i][1][1] * 128), 40, 92, 4),
-                     (enemy_alive[i][0].x - 30, enemy_alive[i][0].y - 16)
+                     (enemy_alive[i][0].x - 4, enemy_alive[i][0].y - 8)
                      )                     
 
         WIN.blit(Get_Sprite(0, 0, 1280, 720, 8), (0, 0))
+
+        WIN.blit(Get_Sprite(0, 0, 60, 537, 9), (320, 155))
 
         WIN.blit(Get_Sprite(223, 27 + (5 - hit_points)
                  * 44, 149, 38, 3), (1100, 40))
@@ -181,7 +179,11 @@ def Jogo():
         hit_is_taken = 0
 
         for i in range(len(mc_projectiles)):
-            mc_projectiles[i][0].x += projectile_vel
+            if mc_projectiles[i][1][0] != 6:
+                mc_projectiles[i][0].x += projectile_vel
+            else:
+                mc_projectiles[i][0].x += projectile_vel * 0.8
+
             if mc_projectiles[i][1][0] == 4 or mc_projectiles[i][1][0] == 5:
 
                 if mc_projectiles[i][0].y < 150:
@@ -202,7 +204,7 @@ def Jogo():
                 mc_projectiles[i][1][1] = False
 
         for i in range(len(enemy_alive)):
-            if enemy_alive[i][0].x > WIDTH * 0.32:
+            if enemy_alive[i][0].x > 380:
                 enemy_alive[i][0].x -= (enemy_alive[i][1][3])
             else:
                 enemy_alive[i][1][2] = 0
@@ -251,7 +253,8 @@ def Jogo():
 
     def SpawnEnemy():
         enemy_hitbox = pygame.Rect(WIDTH + DEFAULT_CHARACTER_WIDHT,
-                                   (lanes_pos[randint(0, 3)] + 40), DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
+                                   (lanes_pos[randint(0, 3)] + 20), 
+                                   DEFAULT_CHARACTER_WIDHT * 0.5, DEFAULT_CHARACTER_HEIGHT * 1.2)
         enemy_stats = [0, randint(0, 3), 1, enemy_vel]
         enemy_alive.append([enemy_hitbox, enemy_stats])
 
@@ -313,18 +316,22 @@ def Jogo():
                         mc_projectiles[i][1][1] = False
 
     def Movement(keys_pressed, mc_hitbox):
-        if keys_pressed[pygame.K_a] and mc_hitbox.x - vel > 0:
+        if keys_pressed[pygame.K_a] and mc_hitbox.x - vel > 90:
             mc_hitbox.x -= vel
-
-        if keys_pressed[pygame.K_d] and (mc_hitbox.x + DEFAULT_CHARACTER_WIDHT) + vel < WIDTH // 4:
+        elif mc_hitbox.x - vel <= 90:
+            mc_hitbox.x = 91
+        if keys_pressed[pygame.K_d] and (mc_hitbox.x + DEFAULT_CHARACTER_WIDHT) + vel < 350:
             mc_hitbox.x += vel
+        elif (mc_hitbox.x + DEFAULT_CHARACTER_WIDHT) + vel > 350:
+            mc_hitbox.x = 346 - DEFAULT_CHARACTER_WIDHT
 
         if keys_pressed[pygame.K_w] and mc_hitbox.y - vel > 0 + ((HEIGHT * 0.20)):
             mc_hitbox.y -= vel
 
-        if keys_pressed[pygame.K_s] and mc_hitbox.y + vel < HEIGHT - DEFAULT_CHARACTER_HEIGHT:
+        if keys_pressed[pygame.K_s] and mc_hitbox.y + vel < HEIGHT - DEFAULT_CHARACTER_HEIGHT - 20:
             mc_hitbox.y += vel
-
+        elif mc_hitbox.y + vel >= HEIGHT - DEFAULT_CHARACTER_HEIGHT - 20: 
+            mc_hitbox.y = HEIGHT - DEFAULT_CHARACTER_HEIGHT - 28
     while run:
 
         if playing == True:
@@ -394,6 +401,9 @@ def MainMenu():
 
     particle_in_screen = 0
 
+    click = False
+
+    start_button = pygame.Rect(590, 250, 100, 50)
     while run_menu:
         WIN.fill(MENU_BLUE)
 
@@ -407,6 +417,8 @@ def MainMenu():
         if run_time - point_time1 > 32:
             point_time1 = run_time
             particle_order1 += 0.25
+
+        mousex, mousey = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -446,6 +458,8 @@ def Load_Sprite_Game():
         'JOGO-1SEM', 'Assets', 'Cenario', 'ChaoCozinha.png'))
     walls_sheet = pygame.image.load(os.path.join(
         'JOGO-1SEM', 'Assets', 'Cenario', 'Scenario_Walls.png'))
+    counter_sheet = pygame.image.load(os.path.join(
+        'JOGO-1SEM', 'Assets', 'Cenario', 'Balcão.png'))
 
     bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
@@ -461,6 +475,7 @@ def Load_Sprite_Game():
     sprite_sheets.append(chao_sheet)
     sprite_sheets.append(cozinha_sheet)
     sprite_sheets.append(walls_sheet)
+    sprite_sheets.append(counter_sheet)
 
 
 def Get_Sprite(x, y, w, h, sheet):
@@ -518,3 +533,4 @@ def Intro():
 
 MainMenu()
 pygame.quit()
+sys.exit()
