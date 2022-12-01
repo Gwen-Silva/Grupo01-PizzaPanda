@@ -151,7 +151,9 @@ def Jogo():
         WIN.blit(Get_Sprite(0, 0, 60, 537, 9), (320, 155))
 
         WIN.blit(Get_Sprite(223, 27 + (5 - hit_points)
-                 * 44, 149, 38, 3), (270, 65))
+                 * 44, 149, 38, 3), (270, 75))
+        
+        WIN.blit(Get_Sprite(2 + 64 * (round_split % 5), 1, 61, 63, 13), (1120, 65))        
 
         for i in range(len(mc_projectiles)):
             if mc_projectiles[i][1][0] != 6:
@@ -378,7 +380,7 @@ def Jogo():
                 point_time2 = run_time
                 SpawnPizza()
         
-        if run_time - point_time3 > 8200 and round_split < 4:
+        if run_time - point_time3 > 6400 and round_split < 4:
                 point_time3 = run_time
                 round_split += 1
         
@@ -387,14 +389,14 @@ def Jogo():
             point_time4 = run_time
             interval = True
 
-        if round_split == 5 and run_time - point_time4 > 3200:
+        if round_split == 5 and run_time - point_time4 > 6400:
             round_split = 0
             round += 1
             interval = False
-            spawn_rate = spawn_rate * 0.95
-            fire_rate = fire_rate * 0.96
+            spawn_rate = spawn_rate * 0.90
+            fire_rate = fire_rate * 0.95
             if round % 3 == 0:
-                enemy_vel = enemy_vel * 1.10
+                enemy_vel = enemy_vel * 1.15
 
         if run_time - point_time5 > 64 and throw_sprite < 3 and mc_throwing == True:
             point_time5 = run_time
