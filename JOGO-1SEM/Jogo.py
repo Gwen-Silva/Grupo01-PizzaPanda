@@ -28,8 +28,6 @@ ALLPIZZA = pygame.font.Font(os.path.join('JOGO-1SEM', 'Assets', 'Fontes', 'Allpi
 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT = (64, 64)
 
-run_menu = True
-run_intro = True
 music = False
 
 sprite_sheets = []
@@ -58,6 +56,7 @@ def Jogo():
         250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
     pizza_refill_zone = pygame.Rect(
         95, HEIGHT - (HEIGHT * 0.22) * 3, WIDTH * 0.05, HEIGHT * 0.70)
+    pizza_hold_hud = pygame.Rect(123, 74, 128, 64)
 
     # velocidades
     vel = 6
@@ -151,9 +150,17 @@ def Jogo():
         WIN.blit(Get_Sprite(0, 0, 60, 537, 9), (320, 155))
 
         WIN.blit(Get_Sprite(223, 27 + (5 - hit_points)
-                 * 44, 149, 38, 3), (270, 75))
+                 * 44, 149, 38, 3), (278, 75))
         
-        WIN.blit(Get_Sprite(2 + 64 * (round_split % 5), 1, 61, 63, 13), (1120, 65))        
+        WIN.blit(Get_Sprite(2 + 64 * (round_split % 5), 1, 61, 63, 13), (1120, 65))
+
+        WIN.blit(Get_Sprite(0, 0, 128, 64, 17), (pizza_hold_hud.x, pizza_hold_hud.y))
+
+        for i in range(len(temp_pizza_sprite)):
+            WIN.blit(Get_Sprite(0 + (((temp_pizza_sprite[i]) % 3)*64),
+                                0 + (((temp_pizza_sprite[i])//3)*64), 64, 64, 5), 
+                                (pizza_hold_hud.x + 64 * i, pizza_hold_hud.y)
+                            )
 
         for i in range(len(mc_projectiles)):
             if mc_projectiles[i][1][0] != 6:
@@ -331,10 +338,10 @@ def Jogo():
 
     def explosion():
         for i in range(len(explosions)):
-            explosions[i][0] -= 150
-            explosions[i][1] -= 150
-            explosions[i][2] += 300
-            explosions[i][3] += 300
+            explosions[i][0] -= 200
+            explosions[i][1] -= 200
+            explosions[i][2] += 400
+            explosions[i][3] += 400
 
     def Movement(keys_pressed, mc_hitbox):
         global running
@@ -497,6 +504,8 @@ def MainMenu():
     start_button = pygame.Rect(295, 560, 230, 72)
     close_button = pygame.Rect(755, 560, 230, 72)
 
+    run_menu = True
+
     while run_menu:
         if music == False:
             mixer.music.load(os.path.join('JOGO-1SEM', 'Assets', 'Sons', 'menu.wav'))
@@ -581,7 +590,9 @@ def Load_Sprite_Game():
     mc_throw_sheet = pygame.image.load(os.path.join(
         'JOGO-1SEM', 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Throw.png')).convert()
     pizza_box_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Itens', 'Pizza_Box.png')).convert()  
+        'JOGO-1SEM', 'Assets', 'Itens', 'Pizza_Box.png')).convert()
+    HUD_holding_pizza = pygame.image.load(os.path.join(
+        'JOGO-1SEM', 'Assets', 'Hud', 'HoldingPizzas.png')).convert()    
 
     bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
@@ -610,6 +621,7 @@ def Load_Sprite_Game():
     sprite_sheets.append(mc_running_sheet) #14
     sprite_sheets.append(mc_throw_sheet) #15
     sprite_sheets.append(pizza_box_sheet) #16
+    sprite_sheets.append(HUD_holding_pizza) #17
 
 
 def Get_Sprite(x, y, w, h, sheet):
@@ -654,20 +666,6 @@ def Handle_MenuParticle():
         menu_particles.remove(particles_remove[i])
 
     particles_remove.clear()
-
-    
-def Intro():
-    point_time = 0
-    order = 0
-    while run_intro:
-        current = pygame.time.get_ticks()
-        if current - point_time > 16:
-            point_time = current
-            order += 1
-        WIN.fill(BLACK)
-
-
-        CLOCK.tick(FPS)
 
 Load_Sprite_Game()
 MainMenu()
