@@ -28,8 +28,6 @@ ALLPIZZA = pygame.font.Font(os.path.join('JOGO-1SEM', 'Assets', 'Fontes', 'Allpi
 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT = (64, 64)
 
-run_menu = True
-run_intro = True
 music = False
 
 sprite_sheets = []
@@ -506,6 +504,8 @@ def MainMenu():
     start_button = pygame.Rect(295, 560, 230, 72)
     close_button = pygame.Rect(755, 560, 230, 72)
 
+    run_menu = True
+
     while run_menu:
         if music == False:
             mixer.music.load(os.path.join('JOGO-1SEM', 'Assets', 'Sons', 'menu.wav'))
@@ -666,20 +666,6 @@ def Handle_MenuParticle():
         menu_particles.remove(particles_remove[i])
 
     particles_remove.clear()
-
-    
-def Intro():
-    point_time = 0
-    order = 0
-    while run_intro:
-        current = pygame.time.get_ticks()
-        if current - point_time > 16:
-            point_time = current
-            order += 1
-        WIN.fill(BLACK)
-
-
-        CLOCK.tick(FPS)
 
 Load_Sprite_Game()
 MainMenu()
