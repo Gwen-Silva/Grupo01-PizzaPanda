@@ -24,6 +24,7 @@ MENU_BLUE = (104, 145, 195)
 
 FPS = 60
 CLOCK = pygame.time.Clock()
+ALLPIZZA = pygame.font.Font(os.path.join('JOGO-1SEM', 'Assets', 'Fontes', 'Allpizza-Regular.ttf'), 64)
 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT = (64, 64)
 
@@ -41,7 +42,7 @@ def Jogo():
     global hit_points
     global music
     
-    mixer.music.load(os.path.join('JOGO-1SEM', 'Sons', 'In game Hijinx.wav'))
+    mixer.music.load(os.path.join('JOGO-1SEM', 'Assets', 'Sons', 'In game Hijinx.wav'))
     mixer.music.play(-1)
 
     # Listas
@@ -49,6 +50,7 @@ def Jogo():
     enemy_alive = []
     pizzas_in_line = []
     temp_pizza_sprite = []
+    explosions = []
 
     # hitboxes
     mc_hitbox = pygame.Rect(
@@ -71,7 +73,6 @@ def Jogo():
     # atributos
     hit_points = 5
     holding_pizzas = 0
-    explosion_size = 300
 
     # Estados
     run = True
@@ -82,12 +83,12 @@ def Jogo():
     SpawnEnemyEvent = pygame.event.Event(CustomEvent1)
 
     # ControleDeSpawn
-    spawn_rate = 1200
-    fire_rate = spawn_rate * 0.90
+    spawn_rate = 4000
+    fire_rate = 4500
 
     # ControleDeSprites
     sprite_order = 0
-    sprite_time = 128
+    sprite_time = 80
 
     # Timers
     point_time = 0
@@ -103,6 +104,9 @@ def Jogo():
             pygame.draw.rect(WIN, BLACK, pizza_refill_zone)
 
             pygame.draw.rect(WIN, RED, mc_hitbox)
+
+            for i in range(len(explosions)):
+                pygame.draw.rect(WIN, RED, explosions[i])            
 
             for i in range(len(enemy_alive)):
                 pygame.draw.rect(WIN, RED, enemy_alive[i][0])
@@ -152,6 +156,9 @@ def Jogo():
                                0 + (((mc_projectiles[i][1][0])//3)*64), 64, 64, 5),
                     (mc_projectiles[i][0].x - 10, mc_projectiles[i][0].y - 12)
                 )
+        
+        for i in range(len(explosions)):
+            WIN.blit(ALLPIZZA.render('kaboom', True, 'Black'), (explosions[i][0] + (explosions[i][2] * 0.5) - 80, explosions[i][1] + (explosions[i][3] * 0.5) - 50))
 
 
 
@@ -210,15 +217,8 @@ def Jogo():
             for i2 in range(len(enemy_alive)):
                 if mc_projectiles[i][0].colliderect(enemy_alive[i2][0]) and mc_projectiles[i][1][1] == True:
                     if mc_projectiles[i][1][0] == 3:
-                        mc_projectiles[i][0] = pygame.Rect(
-                            mc_projectiles[i][0].x - (explosion_size *
-                                                      1.5 - (mc_projectiles[i][0].w * 6) // 1),
-                            mc_projectiles[i][0].y -
-                            (explosion_size -
-                             (mc_projectiles[i][0].h * 4) // 1),
-                            explosion_size * 1.5, explosion_size
-                        )
-                        explosion()
+                        explosions.append(mc_projectiles[i][0])
+                        mc_projectiles[i][1][1] = False
 
                     if mc_projectiles[i][1][0] == 4 or mc_projectiles[i][1][0] == 5:
                         mc_projectiles[i][1][2] -= 1
@@ -233,6 +233,12 @@ def Jogo():
                     holding_pizzas += 1
                     pizzas_in_line[i][1][2] = False
                     temp_pizza_sprite.append(pizzas_in_line[i][1][0])
+
+        if explosions != []:
+            for i in range(len(explosions)):
+                for i2 in range(len(enemy_alive)):
+                    if explosions[i].colliderect(enemy_alive[i][0]):
+                        enemy_alive[i][1][2] -= 1
 
         if hit_is_taken > 0 and hit_points > 0:
             hit_points = hit_points - hit_is_taken
@@ -249,7 +255,7 @@ def Jogo():
             mc_hitbox.x + mc_hitbox.width, mc_hitbox.y + mc_hitbox.height/8, 40, 40)
         projectile_stats = [temp_pizza_sprite[0], True]
         if temp_pizza_sprite[0] == 4 or temp_pizza_sprite[0] == 5:
-            projectile_stats.append(max_bounces)
+            projectile_stats.append(1)
             mc_projectiles.append([projectile, projectile_stats])
 
         else:
@@ -258,7 +264,7 @@ def Jogo():
 
     def SpawnPizza():
         global pizza_type_control  # variável de debug
-        pizza_type_control = randint(0, 6)
+        pizza_type_control = 3 #randint(0, 6)
 
         pizza = pygame.Rect(pizza_refill_zone.x, HEIGHT, 64, 64)
         pizza_stat = [pizza_type_control, pizza_vel, True]
@@ -268,13 +274,10 @@ def Jogo():
         for_removal = []
         for_removal2 = []
         for_removal3 = []
+        for_removal4 = []
         for i in range(len(mc_projectiles)):
             if mc_projectiles[i][1][1] == False:
                 for_removal.append(mc_projectiles[i])
-
-            if mc_projectiles[i][1][0] == 4:
-                if mc_projectiles[i][1][2] <= 0:
-                    for_removal.append(mc_projectiles[i])
 
         for i in range(len(enemy_alive)):
             if enemy_alive[i][1][2] < 1:
@@ -283,6 +286,10 @@ def Jogo():
         for i in range(len(pizzas_in_line)):
             if pizzas_in_line[i][1][2] == False:
                 for_removal3.append(pizzas_in_line[i])
+        
+        for i in range(len(explosions)):
+            if explosions[i][3] > 500:
+                for_removal4.append(explosions[i])
 
         for i in range(len(for_removal)):
             mc_projectiles.remove(for_removal[i])
@@ -292,14 +299,19 @@ def Jogo():
 
         for i in range(len(for_removal3)):
             pizzas_in_line.remove(for_removal3[i])
+        
+        for i in range(len(for_removal4)):
+            explosions.remove(for_removal4[i])
+
 
     def explosion():
-        for i in range(len(mc_projectiles)):
-            for i2 in range(len(enemy_alive)):
-                if mc_projectiles[i][0].colliderect(enemy_alive[i2][0]) and mc_projectiles[i][1][1] == True:
-                    enemy_alive[i2][1][3] -= 1
-                    if i2 == len(enemy_basico_hitbox) - 1:
-                        mc_projectiles[i][1][1] = False
+        for i in range(len(explosions)):
+            explosions[i][0] -= 150
+            explosions[i][1] -= 150
+            explosions[i][2] += 300
+            explosions[i][3] += 300
+
+
 
     def Movement(keys_pressed, mc_hitbox):
         if keys_pressed[pygame.K_a] and mc_hitbox.x - vel > 90:
@@ -330,6 +342,8 @@ def Jogo():
         if run_time - point_time1 > sprite_time:
             point_time1 = run_time
             sprite_order += 1
+            if explosions != []:
+                explosion()
 
         if run_time - point_time2 > fire_rate and fire_rate != 0:
             if len(pizzas_in_line) < max_pizzas_in_line:
@@ -426,7 +440,7 @@ def MainMenu():
 
     while run_menu:
         if music == False:
-            mixer.music.load(os.path.join('JOGO-1SEM', 'Sons', 'menu.wav'))
+            mixer.music.load(os.path.join('JOGO-1SEM', 'Assets', 'Sons', 'menu.wav'))
             mixer.music.play(-1)
             music = True
         
@@ -500,7 +514,9 @@ def Load_Sprite_Game():
     titulo_menu_sheet = pygame.image.load(os.path.join(
         'JOGO-1SEM', 'Assets', 'Gui', 'Titulo.png')).convert()
     game_over_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Gui', 'Tela de game over.png')).convert()        
+        'JOGO-1SEM', 'Assets', 'Gui', 'Tela de game over.png')).convert()
+    timer_sheet = pygame.image.load(os.path.join(
+        'JOGO-1SEM', 'Assets', 'Hud', 'Timer.png')).convert()         
 
     bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
@@ -521,6 +537,7 @@ def Load_Sprite_Game():
     sprite_sheets.append(botoes_menu_sheet)
     sprite_sheets.append(titulo_menu_sheet)
     sprite_sheets.append(game_over_sheet)
+    sprite_sheets.append(timer_sheet)
 
 
 def Get_Sprite(x, y, w, h, sheet):
