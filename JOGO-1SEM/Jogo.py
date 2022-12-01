@@ -36,6 +36,7 @@ sprite_sheets = []
 menu_particles = []
 particles_remove = []
 
+
 def Jogo():
 
     global holding_pizzas
@@ -57,10 +58,9 @@ def Jogo():
         250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
     pizza_refill_zone = pygame.Rect(
         95, HEIGHT - (HEIGHT * 0.22) * 3, WIDTH * 0.05, HEIGHT * 0.70)
-    enemy_basico_hitbox = 0
 
     # velocidades
-    vel = 7
+    vel = 6
     projectile_vel = 4
     pizza_vel = 2
     enemy_vel = 1
@@ -68,7 +68,6 @@ def Jogo():
     # limites
     max_pizzas_in_line = 8
     max_holding_pizzas = 2
-    max_bounces = 2
 
     # atributos
     hit_points = 5
@@ -77,6 +76,9 @@ def Jogo():
     # Estados
     run = True
     playing = True
+    interval = False
+    mc_running = False
+    mc_throwing = False
 
     # EVENTOS
     CustomEvent1 = pygame.event.custom_type() + 1
@@ -84,18 +86,27 @@ def Jogo():
 
     # ControleDeSpawn
     spawn_rate = 4000
-    fire_rate = 4500
+    fire_rate = 4000
 
-    # ControleDeSprites
+    # Controles
     sprite_order = 0
-    sprite_time = 80
+    sprite_time = 112
+    throw_sprite = 0
+    round_split = 0
+    round = 0
 
     # Timers
     point_time = 0
     point_time1 = 0
     point_time2 = 0
+    point_time3 = 0
+    point_time4 = 0
+    point_time5 = 0
 
     def ScreenUpdate():
+
+        holding_pizzas_cords = [(mc_hitbox.x + 40, mc_hitbox.y + 25), (mc_hitbox.x + 40, mc_hitbox.y + 19)]
+
         WIN.blit(Get_Sprite(0, 0, 320, 576, 7), (0, HEIGHT * 0.20))
         WIN.blit(Get_Sprite(0, 0, 960, 576, 6), (WIDTH * 0.25, HEIGHT * 0.20))
         
@@ -160,10 +171,23 @@ def Jogo():
         for i in range(len(explosions)):
             WIN.blit(ALLPIZZA.render('kaboom', True, 'Black'), (explosions[i][0] + (explosions[i][2] * 0.5) - 80, explosions[i][1] + (explosions[i][3] * 0.5) - 50))
 
+        if mc_throwing:
+            WIN.blit(Get_Sprite(34 + (128 * (throw_sprite % 3)),
+                    31, 64, 64, 15), (mc_hitbox.x, mc_hitbox.y))
 
+        elif not mc_running:
+            WIN.blit(Get_Sprite(34 + (128 * (sprite_order % 18)),
+                    32, 54, 64, 0), (mc_hitbox.x, mc_hitbox.y))
+        else:
+            WIN.blit(Get_Sprite(34 + (128 * (sprite_order % 2)),
+                    31, 54, 64, 14), (mc_hitbox.x, mc_hitbox.y))
 
-        WIN.blit(Get_Sprite(34 + (128 * (sprite_order % 18)),
-                 32, 72, 64, 0), (mc_hitbox.x, mc_hitbox.y))
+        if holding_pizzas == 1:
+            WIN.blit(Get_Sprite(0, 12, 32, 8, 16), (holding_pizzas_cords[0]))
+
+        elif holding_pizzas == 2:
+            for i in range(len(holding_pizzas_cords)):
+                WIN.blit(Get_Sprite(0, 12, 32, 8, 16), (holding_pizzas_cords[i]))
 
         pygame.display.update()
 
@@ -264,7 +288,7 @@ def Jogo():
 
     def SpawnPizza():
         global pizza_type_control  # variável de debug
-        pizza_type_control = 3 #randint(0, 6)
+        pizza_type_control = randint(0, 6)
 
         pizza = pygame.Rect(pizza_refill_zone.x, HEIGHT, 64, 64)
         pizza_stat = [pizza_type_control, pizza_vel, True]
@@ -303,7 +327,6 @@ def Jogo():
         for i in range(len(for_removal4)):
             explosions.remove(for_removal4[i])
 
-
     def explosion():
         for i in range(len(explosions)):
             explosions[i][0] -= 150
@@ -311,31 +334,36 @@ def Jogo():
             explosions[i][2] += 300
             explosions[i][3] += 300
 
-
-
     def Movement(keys_pressed, mc_hitbox):
-        if keys_pressed[pygame.K_a] and mc_hitbox.x - vel > 90:
+        global running
+
+        if (keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]) and mc_hitbox.x - vel > 90:
             mc_hitbox.x -= vel
         elif mc_hitbox.x - vel <= 90:
             mc_hitbox.x = 91
-        if keys_pressed[pygame.K_d] and (mc_hitbox.x + DEFAULT_CHARACTER_WIDHT) + vel < 350:
+
+        if (keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]) and (mc_hitbox.x + DEFAULT_CHARACTER_WIDHT) + vel < 350:
             mc_hitbox.x += vel
+
         elif (mc_hitbox.x + DEFAULT_CHARACTER_WIDHT) + vel > 350:
             mc_hitbox.x = 346 - DEFAULT_CHARACTER_WIDHT
 
-        if keys_pressed[pygame.K_w] and mc_hitbox.y - vel > 0 + ((HEIGHT * 0.20)):
+        if (keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]) and mc_hitbox.y - vel > 0 + ((HEIGHT * 0.20)):
             mc_hitbox.y -= vel
 
-        if keys_pressed[pygame.K_s] and mc_hitbox.y + vel < HEIGHT - DEFAULT_CHARACTER_HEIGHT - 28:
+        if (keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN])  and mc_hitbox.y + vel < HEIGHT - DEFAULT_CHARACTER_HEIGHT - 28:
             mc_hitbox.y += vel
         elif mc_hitbox.y + vel >= HEIGHT - DEFAULT_CHARACTER_HEIGHT - 28: 
             mc_hitbox.y = HEIGHT - DEFAULT_CHARACTER_HEIGHT - 29
+
     while run:
+
+        mc_running = False
 
         if playing == True:
             run_time = pygame.time.get_ticks()
 
-        if run_time - point_time > spawn_rate and spawn_rate != 0:
+        if run_time - point_time > spawn_rate and not interval:
             point_time = run_time
             pygame.event.post(SpawnEnemyEvent)
 
@@ -349,10 +377,38 @@ def Jogo():
             if len(pizzas_in_line) < max_pizzas_in_line:
                 point_time2 = run_time
                 SpawnPizza()
+        
+        if run_time - point_time3 > 8200 and round_split < 4:
+                point_time3 = run_time
+                round_split += 1
+        
+        if round_split == 4:
+            round_split = 5
+            point_time4 = run_time
+            interval = True
+
+        if round_split == 5 and run_time - point_time4 > 3200:
+            round_split = 0
+            round += 1
+            interval = False
+            spawn_rate = spawn_rate * 0.95
+            fire_rate = fire_rate * 0.96
+            if round % 3 == 0:
+                enemy_vel = enemy_vel * 1.10
+
+        if run_time - point_time5 > 64 and throw_sprite < 3 and mc_throwing == True:
+            point_time5 = run_time
+            throw_sprite += 1 
+          
+        if throw_sprite > 2:
+            mc_throwing = False
+            throw_sprite = 0
 
         keys_pressed = pygame.key.get_pressed()
-        Movement(keys_pressed, mc_hitbox)
 
+        if keys_pressed[pygame.K_a] or keys_pressed[pygame.K_w] or keys_pressed[pygame.K_s] or keys_pressed[pygame.K_a] or keys_pressed[pygame.K_d] or keys_pressed[pygame.K_UP] or keys_pressed[pygame.K_DOWN] or keys_pressed[pygame.K_LEFT] or keys_pressed[pygame.K_RIGHT]:
+            Movement(keys_pressed, mc_hitbox)
+            mc_running = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -363,11 +419,12 @@ def Jogo():
                     music = False
                     run = False
 
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE and mc_throwing == False:
                     if holding_pizzas > 0:
                         SpawnProjectile()
                         holding_pizzas -= 1
-
+                        mc_throwing = True
+                
                 if event.key == pygame.K_ESCAPE:
                     run = False
 
@@ -394,12 +451,12 @@ def GameOver():
     point_time = 0
     order = 0
 
-    mixer.music.fadeout(4800)
+    mixer.music.fadeout(3200)
     while run:
         run_time = pygame.time.get_ticks()
 
         if run_time - point_time > 16:
-            order += 4
+            order += 6
         
         if order <= 720:
             WIN.blit(Get_Sprite(0, 0, 1280, 720, 12), (0, HEIGHT - order))
@@ -490,7 +547,7 @@ def MainMenu():
 def Load_Sprite_Game():
 
     mc_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Panda', 'Idle', 'Pizza_Panda_Idle.png')).convert()
+        'JOGO-1SEM', 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Idle.png')).convert()
     bg_sheet = pygame.image.load(os.path.join(
         'JOGO-1SEM', 'Assets', 'Cenario', 'MainCenario.png')).convert()
     conveyor_sheet = pygame.image.load(os.path.join(
@@ -516,28 +573,41 @@ def Load_Sprite_Game():
     game_over_sheet = pygame.image.load(os.path.join(
         'JOGO-1SEM', 'Assets', 'Gui', 'Tela de game over.png')).convert()
     timer_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Hud', 'Timer.png')).convert()         
+        'JOGO-1SEM', 'Assets', 'Hud', 'Timer.png')).convert()    
+    mc_running_sheet = pygame.image.load(os.path.join(
+        'JOGO-1SEM', 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Walking.png')).convert()   
+    mc_throw_sheet = pygame.image.load(os.path.join(
+        'JOGO-1SEM', 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Throw.png')).convert()
+    pizza_box_sheet = pygame.image.load(os.path.join(
+        'JOGO-1SEM', 'Assets', 'Itens', 'Pizza_Box.png')).convert()  
 
     bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
     projectile_sheet = pygame.transform.scale(
         projectile_sheet, (768 * 0.25, 768 * 0.25))
     botoes_menu_sheet = pygame.transform.scale(botoes_menu_sheet, (512 * 0.5, 1024 * 0.5))
+    mc_running_sheet = pygame.transform.scale(mc_running_sheet, (256, 128))
+    mc_throw_sheet = pygame.transform.scale(mc_throw_sheet, (384, 128))
+    pizza_box_sheet = pygame.transform.scale(pizza_box_sheet, (32, 32))
 
-    sprite_sheets.append(mc_sheet)
-    sprite_sheets.append(bg_sheet)
-    sprite_sheets.append(conveyor_sheet)
-    sprite_sheets.append(HUD_hp_sheet)
-    sprite_sheets.append(enemy_sheet)
-    sprite_sheets.append(projectile_sheet)
-    sprite_sheets.append(chao_sheet)
-    sprite_sheets.append(cozinha_sheet)
-    sprite_sheets.append(walls_sheet)
-    sprite_sheets.append(counter_sheet)
-    sprite_sheets.append(botoes_menu_sheet)
-    sprite_sheets.append(titulo_menu_sheet)
-    sprite_sheets.append(game_over_sheet)
-    sprite_sheets.append(timer_sheet)
+
+    sprite_sheets.append(mc_sheet) #0
+    sprite_sheets.append(bg_sheet) #1
+    sprite_sheets.append(conveyor_sheet) #2
+    sprite_sheets.append(HUD_hp_sheet) #3
+    sprite_sheets.append(enemy_sheet) #4
+    sprite_sheets.append(projectile_sheet) #5
+    sprite_sheets.append(chao_sheet) #6
+    sprite_sheets.append(cozinha_sheet) #7
+    sprite_sheets.append(walls_sheet) #8
+    sprite_sheets.append(counter_sheet) #9
+    sprite_sheets.append(botoes_menu_sheet) #10
+    sprite_sheets.append(titulo_menu_sheet) #11
+    sprite_sheets.append(game_over_sheet) #12
+    sprite_sheets.append(timer_sheet) #13
+    sprite_sheets.append(mc_running_sheet) #14
+    sprite_sheets.append(mc_throw_sheet) #15
+    sprite_sheets.append(pizza_box_sheet) #16
 
 
 def Get_Sprite(x, y, w, h, sheet):
