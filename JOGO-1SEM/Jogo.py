@@ -3,6 +3,7 @@ import sys
 import pygame
 from math import sin, cos
 from pygame.locals import *
+from pygame import mixer
 from random import randint, choice
 
 pygame.init()
@@ -12,6 +13,7 @@ WIDTH, HEIGHT = 1280, 720
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Super Pizza Panic")
 pygame.display.toggle_fullscreen()
+
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -25,21 +27,9 @@ CLOCK = pygame.time.Clock()
 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT = (64, 64)
 
-LANE_1 = pygame.Rect((WIDTH - (WIDTH * 0.75)), 560,
-                     (WIDTH * 0.75), (120)
-                     )
-LANE_2 = pygame.Rect((WIDTH - (WIDTH * 0.75)), 440,
-                     (WIDTH * 0.75), (120)
-                     )
-LANE_3 = pygame.Rect((WIDTH - ((WIDTH * 0.75))), 320,
-                     (WIDTH * 0.75), (120)
-                     )
-LANE_4 = pygame.Rect((WIDTH - (WIDTH * 0.75)), 200,
-                     (WIDTH * 0.75), (120)
-                     )
-
 run_menu = True
 run_intro = True
+music = False
 
 sprite_sheets = []
 menu_particles = []
@@ -49,9 +39,12 @@ def Jogo():
 
     global holding_pizzas
     global hit_points
+    global music
+    
+    mixer.music.load(os.path.join('JOGO-1SEM', 'Sons', 'In game Hijinx.wav'))
+    mixer.music.play(-1)
 
     # Listas
-    lanes_pos = [LANE_1.y, LANE_2.y, LANE_3.y, LANE_4.y]
     mc_projectiles = []
     enemy_alive = []
     pizzas_in_line = []
@@ -62,8 +55,7 @@ def Jogo():
         250, 360, DEFAULT_CHARACTER_WIDHT, DEFAULT_CHARACTER_HEIGHT)
     pizza_refill_zone = pygame.Rect(
         95, HEIGHT - (HEIGHT * 0.22) * 3, WIDTH * 0.05, HEIGHT * 0.70)
-    enemy_basico_hitbox = pygame.Rect(WIDTH - DEFAULT_CHARACTER_WIDHT, (lanes_pos[randint(0, 3)]),
-                                      DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT)
+    enemy_basico_hitbox = 0
 
     # velocidades
     vel = 7
@@ -72,14 +64,13 @@ def Jogo():
     enemy_vel = 1
 
     # limites
-    max_pizzas_in_line = 7
+    max_pizzas_in_line = 8
     max_holding_pizzas = 2
-    max_bounces = 20
+    max_bounces = 2
 
     # atributos
     hit_points = 5
     holding_pizzas = 0
-    bounce_yspeed = 3
     explosion_size = 300
 
     # Estados
@@ -91,7 +82,7 @@ def Jogo():
     SpawnEnemyEvent = pygame.event.Event(CustomEvent1)
 
     # ControleDeSpawn
-    spawn_rate = 4000
+    spawn_rate = 1200
     fire_rate = spawn_rate * 0.90
 
     # ControleDeSprites
@@ -109,10 +100,6 @@ def Jogo():
         
         show_hitboxes = False
         if show_hitboxes == True:
-            pygame.draw.rect(WIN, WHITE, LANE_1)
-            pygame.draw.rect(WIN, BLACK, LANE_2)
-            pygame.draw.rect(WIN, WHITE, LANE_3)
-            pygame.draw.rect(WIN, BLACK, LANE_4)
             pygame.draw.rect(WIN, BLACK, pizza_refill_zone)
 
             pygame.draw.rect(WIN, RED, mc_hitbox)
@@ -149,7 +136,7 @@ def Jogo():
         WIN.blit(Get_Sprite(0, 0, 60, 537, 9), (320, 155))
 
         WIN.blit(Get_Sprite(223, 27 + (5 - hit_points)
-                 * 44, 149, 38, 3), (310, 65))
+                 * 44, 149, 38, 3), (270, 65))
 
         for i in range(len(mc_projectiles)):
             if mc_projectiles[i][1][0] != 6:
@@ -252,7 +239,7 @@ def Jogo():
 
     def SpawnEnemy():
         enemy_hitbox = pygame.Rect(WIDTH + DEFAULT_CHARACTER_WIDHT,
-                                   (lanes_pos[randint(0, 3)] + 20), 
+                                   (choice([210, 250, 300, 350, 400, 450, 500, 550, 600])), 
                                    DEFAULT_CHARACTER_WIDHT * 0.5, DEFAULT_CHARACTER_HEIGHT * 1.2)
         enemy_stats = [0, randint(0, 3), 1, enemy_vel]
         enemy_alive.append([enemy_hitbox, enemy_stats])
@@ -354,11 +341,13 @@ def Jogo():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                sys.exit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    MainMenu()
+                    music = False
+                    run = False
 
                 if event.key == pygame.K_SPACE:
                     if holding_pizzas > 0:
@@ -384,7 +373,38 @@ def Jogo():
 
 
 def GameOver():
-    print("Game Over")
+    global music
+    music = False
+    run = True
+
+    point_time = 0
+    order = 0
+
+    mixer.music.fadeout(4800)
+    while run:
+        run_time = pygame.time.get_ticks()
+
+        if run_time - point_time > 16:
+            order += 4
+        
+        if order <= 720:
+            WIN.blit(Get_Sprite(0, 0, 1280, 720, 12), (0, HEIGHT - order))
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        
+        if order > 1200:
+            run = False
+            WIN.fill(MENU_BLUE)
+            pygame.display.update()
+
+
+        CLOCK.tick(FPS)
+
 
 
 def MainMenu():
@@ -392,6 +412,7 @@ def MainMenu():
     global run_menu
     global particle_order
     global particle_order1
+    global music
 
     point_time0 = 0
     point_time1 = 0
@@ -404,6 +425,11 @@ def MainMenu():
     close_button = pygame.Rect(755, 560, 230, 72)
 
     while run_menu:
+        if music == False:
+            mixer.music.load(os.path.join('JOGO-1SEM', 'Sons', 'menu.wav'))
+            mixer.music.play(-1)
+            music = True
+        
         mouseX, mouseY = pygame.mouse.get_pos()
 
         WIN.fill(MENU_BLUE)
@@ -473,6 +499,8 @@ def Load_Sprite_Game():
         'JOGO-1SEM', 'Assets', 'Gui', 'Botoes.png')).convert()
     titulo_menu_sheet = pygame.image.load(os.path.join(
         'JOGO-1SEM', 'Assets', 'Gui', 'Titulo.png')).convert()
+    game_over_sheet = pygame.image.load(os.path.join(
+        'JOGO-1SEM', 'Assets', 'Gui', 'Tela de game over.png')).convert()        
 
     bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
@@ -492,6 +520,7 @@ def Load_Sprite_Game():
     sprite_sheets.append(counter_sheet)
     sprite_sheets.append(botoes_menu_sheet)
     sprite_sheets.append(titulo_menu_sheet)
+    sprite_sheets.append(game_over_sheet)
 
 
 def Get_Sprite(x, y, w, h, sheet):
@@ -540,9 +569,14 @@ def Handle_MenuParticle():
     
 def Intro():
     point_time = 0
+    order = 0
     while run_intro:
         current = pygame.time.get_ticks()
+        if current - point_time > 16:
+            point_time = current
+            order += 1
         WIN.fill(BLACK)
+
 
         CLOCK.tick(FPS)
 
