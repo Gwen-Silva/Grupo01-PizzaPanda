@@ -8,6 +8,9 @@ from random import randint, choice
 
 pygame.init()
 
+
+directory = os.getcwd()
+
 # VARIAVEIS ESTATICAS
 WIDTH, HEIGHT = 1280, 720
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -24,7 +27,7 @@ MENU_BLUE = (104, 145, 195)
 
 FPS = 60
 CLOCK = pygame.time.Clock()
-ALLPIZZA = pygame.font.Font(os.path.join('JOGO-1SEM', 'Assets', 'Fontes', 'Allpizza-Regular.ttf'), 64)
+ALLPIZZA = pygame.font.Font(os.path.join(directory, 'Assets', 'Fontes', 'Allpizza-Regular.ttf'), 64)
 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT = (64, 64)
 
@@ -33,7 +36,6 @@ music = False
 sprite_sheets = []
 menu_particles = []
 particles_remove = []
-
 
 def Jogo():
 
@@ -649,7 +651,7 @@ def Handle_MenuParticle():
 
         menu_particles[i][0][2] -= - menu_particles[i][2]
 
-        raio = (menu_particles[i][0][0] + menu_particles[i][0][1]) - menu_particles[i][0][0]
+        raio = menu_particles[i][0][1]
         x1 = menu_particles[i][0][0] + raio * sin((particle_order1 * menu_particles[i][4]) * menu_particles[i][5]) 
         y1 = menu_particles[i][0][2] + raio * cos((particle_order1 * menu_particles[i][4]) * menu_particles[i][5])
         x2 = menu_particles[i][0][0] - raio * sin((particle_order1 * menu_particles[i][4]) * menu_particles[i][5])
