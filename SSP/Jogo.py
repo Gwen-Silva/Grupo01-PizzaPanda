@@ -43,7 +43,7 @@ def Jogo():
     global hit_points
     global music
     
-    mixer.music.load(os.path.join('JOGO-1SEM', 'Assets', 'Sons', 'In game Hijinx.wav'))
+    mixer.music.load(os.path.join(directory, 'Assets', 'Sons', 'In game Hijinx.wav'))
     mixer.music.play(-1)
 
     # Listas
@@ -510,7 +510,7 @@ def MainMenu():
 
     while run_menu:
         if music == False:
-            mixer.music.load(os.path.join('JOGO-1SEM', 'Assets', 'Sons', 'menu.wav'))
+            mixer.music.load(os.path.join(directory,'Assets', 'Sons', 'menu.wav'))
             mixer.music.play(-1)
             music = True
         
@@ -560,41 +560,41 @@ def MainMenu():
 def Load_Sprite_Game():
 
     mc_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Idle.png')).convert()
+        directory, 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Idle.png')).convert()
     bg_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'MainCenario.png')).convert()
+        directory, 'Assets', 'Cenario', 'MainCenario.png')).convert()
     conveyor_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'Esteira.png')).convert()
+        directory, 'Assets', 'Cenario', 'Esteira.png')).convert()
     HUD_hp_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Hud', 'Vida.png'))
+        directory, 'Assets', 'Hud', 'Vida.png'))
     enemy_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Inimigos', 'Adultos.png')).convert()
+        directory, 'Assets', 'Inimigos', 'Adultos.png')).convert()
     projectile_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Itens', 'PizzasFinal.png')).convert()
+        directory, 'Assets', 'Itens', 'PizzasFinal.png')).convert()
     chao_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'ChaoFinal.png')).convert()
+        directory, 'Assets', 'Cenario', 'ChaoFinal.png')).convert()
     cozinha_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'ChaoCozinha.png')).convert()
+        directory, 'Assets', 'Cenario', 'ChaoCozinha.png')).convert()
     walls_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'Scenario_Walls.png')).convert()
+        directory, 'Assets', 'Cenario', 'Scenario_Walls.png')).convert()
     counter_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Cenario', 'Balcão.png')).convert()
+        directory, 'Assets', 'Cenario', 'Balcão.png')).convert()
     botoes_menu_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Gui', 'Botoes.png')).convert()
+        directory, 'Assets', 'Gui', 'Botoes.png')).convert()
     titulo_menu_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Gui', 'Titulo.png')).convert()
+        directory, 'Assets', 'Gui', 'Titulo.png')).convert()
     game_over_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Gui', 'Tela de game over.png')).convert()
+        directory, 'Assets', 'Gui', 'Tela de game over.png')).convert()
     timer_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Hud', 'Timer.png')).convert()    
+        directory, 'Assets', 'Hud', 'Timer.png')).convert()    
     mc_running_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Walking.png')).convert()   
+        directory, 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Walking.png')).convert()   
     mc_throw_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Throw.png')).convert()
+        directory, 'Assets', 'Panda', 'Pizza_Panda_Without_Pizza_Throw.png')).convert()
     pizza_box_sheet = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Itens', 'Pizza_Box.png')).convert()
+        directory, 'Assets', 'Itens', 'Pizza_Box.png')).convert()
     HUD_holding_pizza = pygame.image.load(os.path.join(
-        'JOGO-1SEM', 'Assets', 'Hud', 'HoldingPizzas.png')).convert()    
+        directory, 'Assets', 'Hud', 'HoldingPizzas.png')).convert()    
 
     bg_sheet = pygame.transform.scale(bg_sheet, (360, 485))
     mc_sheet = pygame.transform.scale(mc_sheet, (2304, 128))
