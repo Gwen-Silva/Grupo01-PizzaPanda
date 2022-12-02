@@ -27,7 +27,7 @@ MENU_BLUE = (104, 145, 195)
 
 FPS = 60
 CLOCK = pygame.time.Clock()
-ALLPIZZA = pygame.font.Font(os.path.join(directory, 'Assets', 'Fontes', 'Allpizza-Regular.ttf'), 64)
+ALLPIZZA = pygame.font.Font(os.path.join(directory, 'SSP' 'Assets', 'Fontes', 'Allpizza-Regular.ttf'), 64)
 
 DEFAULT_CHARACTER_HEIGHT, DEFAULT_CHARACTER_WIDHT = (64, 64)
 
